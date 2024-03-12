@@ -15,7 +15,7 @@ export const dm_sans = DM_Sans({
   display: "swap",
 });
 
-export const poppins = DM_Sans({
-  subsets: ["latin"],
-  display: "swap",
-});
+// export const poppins = Poppins({
+//   subsets: ["latin"],
+//   display: "swap",
+// });
