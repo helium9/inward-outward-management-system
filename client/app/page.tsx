@@ -47,14 +47,17 @@ const ListClaimWrapper = ({
         <CardTitle className="text-xl font-bold min-w-36">{title}</CardTitle>
         <div className="flex flex-row gap-2 w-fit">
           <DropdownMenu>
-            <DropdownMenuTrigger className={`flex flex-row items-center`+ (condensed?"":`min-w-28`)}>
+            <DropdownMenuTrigger className={`flex flex-row items-center`+ (condensed?"":`sm:min-w-28`)} asChild> 
+            {/* used asChild to prevent button in button hydration error. Refer: https://github.com/shadcn-ui/ui/issues/1626 */}
               <Button
                 variant="outline"
                 className={`bg-slate-100 p-2 text-zinc-600 h-8 border-zinc-300 m-0 rounded`+(condensed?`w-fit`:`w-full`)}
               >
                 <FilterAltOutlined />
+                <div className="flex-row items-center hidden sm:flex">
                 {!condensed && (<p className="pl-1 pr-2 mr-auto">Filter</p>)}
                 {!condensed && (<ExpandCircleDownOutlined sx={{ fontSize: 16 }}/>)}
+                </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -66,17 +69,25 @@ const ListClaimWrapper = ({
               <DropdownMenuItem>Filter4</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Input
+          <div className="hidden sm:block"><Input
             size="sm"
             variant="bordered"
             classNames={{
               base: searchBoxThemeText,
-              inputWrapper: "rounded border-zinc-200 border",
-              input: "",
+              inputWrapper: "rounded border-zinc-200 border"
             }}
             placeholder={(condensed?``:`Search`)}
             startContent={<Search sx={{ color: "#999999" }} />}
-          />
+          /></div>
+          <div className="block sm:hidden"><Input
+            size="sm"
+            variant="bordered"
+            classNames={{
+              base: `m-0 w-10`,
+              inputWrapper: "rounded border-zinc-200 border"
+            }}
+            startContent={<Search sx={{ color: "#999999" }} />}
+          /></div>
         </div>
       </div>
       <CardContent className="flex gap-3 flex-col">{children}</CardContent>
@@ -116,7 +127,7 @@ const ClaimWrapper = ({
         </div>
       </div>
       {action !== null && (
-        <div className="flex flex-col text-zinc-500 font-semibold items-end">
+        <div className="flex-col text-zinc-500 font-semibold items-end hidden sm:flex">
           <span className="flex flex-row">
             <p className="text-zinc-900">{action?.e_name}&nbsp;</p>
             <p> at {action?.time_stamp}</p>
@@ -130,9 +141,9 @@ const ClaimWrapper = ({
 
 export default function Home() {
   return (
-    <main className="p-2 px-24">
+    <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="text-3xl font-extrabold my-4">Dashboard</div>
-      <section className="flex flex-row gap-4">
+      <section className="flex flex-col lg:flex-row gap-4">
         <ListClaimWrapper title={"Current claims"} condensed={false}>
           <ClaimWrapper
             type={"new"}
@@ -176,22 +187,16 @@ export default function Home() {
           />
         </ListClaimWrapper>
 
-        <Card className="max-w-96 rounded-md max-h-52">
+        <Card className="w-full sm:max-w-96 rounded-md sm:max-h-52">
           <CardHeader>
             <CardTitle className="text-xl font-bold">Welcome, Rishi</CardTitle>
             <CardDescription className="font-semibold text-zinc-500">
               F/A Employee
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-row items-center gap-2">
-            <span className="rounded-full bg-zinc-300 p-2">
-              <Phone />
-            </span>
-            <p>999999999</p>
-            <span className="ml-4 rounded-full bg-zinc-300 p-2">
-              <MailOutline />
-            </span>
-            <p>rishi@iiti.ac.in</p>
+          <CardContent className="flex flex-row flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-8">
+            <div className="flex flex-row items-center"><span className="rounded-full bg-zinc-300 p-2 mr-2"><Phone /></span>999999999</div>
+            <div className="flex flex-row items-center"><span className="rounded-full bg-zinc-300 p-2 mr-2"><MailOutline /></span>rishi@iiti.ac.in</div>
           </CardContent>
           <CardFooter className="flex flex-row gap-4 text-zinc-500 text-xs">
             <p>Change Password?</p>
@@ -199,7 +204,7 @@ export default function Home() {
           </CardFooter>
         </Card>
       </section>
-      <section className="flex flex-row gap-4 mt-12">
+      <section className="flex flex-col lg:flex-row gap-4 mt-12">
         <ListClaimWrapper title={"Action history"} condensed={false}>
           <ClaimWrapper
             type={"new"}
