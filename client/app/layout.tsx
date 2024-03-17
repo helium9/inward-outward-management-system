@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import {Providers} from "./providers";
-import { dm_sans, poppins, inter } from "./fonts";
-
+import { dm_sans, inter } from "./fonts";
+// import NavBar from "@/components/NavBar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,6 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* <NavBar/> */}
       <body className={dm_sans.className}>
         <Providers>
           {children}

@@ -33,30 +33,40 @@ import { ReactNode } from "react";
 
 const ListClaimWrapper = ({
   title,
-  condensed=false,
+  condensed = false,
   children,
 }: {
   title: string;
-  condensed: boolean,
+  condensed: boolean;
   children: ReactNode[];
 }) => {
-  const searchBoxThemeText = (!condensed)?`m-0 max-w-96`:'m-0 w-10';
+  const searchBoxThemeText = !condensed ? `m-0 max-w-96` : "m-0 w-10";
   return (
     <Card className="rounded-md w-full !px-3 min-w-80">
       <div className="flex flex-row items-center m-4 place-content-between">
         <CardTitle className="text-xl font-bold min-w-36">{title}</CardTitle>
         <div className="flex flex-row gap-2 w-fit">
           <DropdownMenu>
-            <DropdownMenuTrigger className={`flex flex-row items-center`+ (condensed?"":`sm:min-w-28`)} asChild> 
-            {/* used asChild to prevent button in button hydration error. Refer: https://github.com/shadcn-ui/ui/issues/1626 */}
+            <DropdownMenuTrigger
+              className={
+                `flex flex-row items-center` + (condensed ? "" : `sm:min-w-28`)
+              }
+              asChild
+            >
+              {/* used asChild to prevent button in button hydration error. Refer: https://github.com/shadcn-ui/ui/issues/1626 */}
               <Button
                 variant="outline"
-                className={`bg-slate-100 p-2 text-zinc-600 h-8 border-zinc-300 m-0 rounded`+(condensed?`w-fit`:`w-full`)}
+                className={
+                  `bg-slate-100 p-2 text-zinc-600 h-8 border-zinc-300 m-0 rounded` +
+                  (condensed ? `w-fit` : `w-full`)
+                }
               >
                 <FilterAltOutlined />
                 <div className="flex-row items-center hidden sm:flex">
-                {!condensed && (<p className="pl-1 pr-2 mr-auto">Filter</p>)}
-                {!condensed && (<ExpandCircleDownOutlined sx={{ fontSize: 16 }}/>)}
+                  {!condensed && <p className="pl-1 pr-2 mr-auto">Filter</p>}
+                  {!condensed && (
+                    <ExpandCircleDownOutlined sx={{ fontSize: 16 }} />
+                  )}
                 </div>
               </Button>
             </DropdownMenuTrigger>
@@ -69,28 +79,32 @@ const ListClaimWrapper = ({
               <DropdownMenuItem>Filter4</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div className="hidden sm:block"><Input
-            size="sm"
-            variant="bordered"
-            classNames={{
-              base: searchBoxThemeText,
-              inputWrapper: "rounded border-zinc-200 border"
-            }}
-            placeholder={(condensed?``:`Search`)}
-            startContent={<Search sx={{ color: "#999999" }} />}
-          /></div>
-          <div className="block sm:hidden"><Input
-            size="sm"
-            variant="bordered"
-            classNames={{
-              base: `m-0 w-10`,
-              inputWrapper: "rounded border-zinc-200 border"
-            }}
-            startContent={<Search sx={{ color: "#999999" }} />}
-          /></div>
+          <div className="hidden sm:block">
+            <Input
+              size="sm"
+              variant="bordered"
+              classNames={{
+                base: searchBoxThemeText,
+                inputWrapper: "rounded border-zinc-200 border",
+              }}
+              placeholder={condensed ? `` : `Search`}
+              startContent={<Search sx={{ color: "#999999" }} />}
+            />
+          </div>
+          <div className="block sm:hidden">
+            <Input
+              size="sm"
+              variant="bordered"
+              classNames={{
+                base: `m-0 w-10`,
+                inputWrapper: "rounded border-zinc-200 border",
+              }}
+              startContent={<Search sx={{ color: "#999999" }} />}
+            />
+          </div>
         </div>
       </div>
-      <CardContent className="flex gap-3 flex-col">{children}</CardContent>
+      <CardContent className="flex flex-col">{children}</CardContent>
       <CardFooter className="text-zinc-500 text-xs underline">
         <p>View More</p>
       </CardFooter>
@@ -118,7 +132,7 @@ const ClaimWrapper = ({
   };
   const icon = iconMap[type] || null;
   return (
-    <div className="flex flex-row place-content-between">
+    <div className="flex flex-row place-content-between hover:bg-zinc-100 p-2 rounded">
       <div className="flex flex-row items-center">
         {icon}
         <div className="flex flex-col ml-2 font-semibold">
@@ -195,8 +209,18 @@ export default function Home() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-row flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-8">
-            <div className="flex flex-row items-center"><span className="rounded-full bg-zinc-300 p-2 mr-2"><Phone /></span>999999999</div>
-            <div className="flex flex-row items-center"><span className="rounded-full bg-zinc-300 p-2 mr-2"><MailOutline /></span>rishi@iiti.ac.in</div>
+            <div className="flex flex-row items-center">
+              <span className="rounded-full bg-zinc-300 p-2 mr-2">
+                <Phone />
+              </span>
+              999999999
+            </div>
+            <div className="flex flex-row items-center">
+              <span className="rounded-full bg-zinc-300 p-2 mr-2">
+                <MailOutline />
+              </span>
+              rishi@iiti.ac.in
+            </div>
           </CardContent>
           <CardFooter className="flex flex-row gap-4 text-zinc-500 text-xs">
             <p>Change Password?</p>
