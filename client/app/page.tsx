@@ -42,7 +42,7 @@ const ListClaimWrapper = ({
 }) => {
   const searchBoxThemeText = (!condensed)?`m-0 max-w-96`:'m-0 w-10';
   return (
-    <Card className="rounded-md w-full px-3 min-w-80">
+    <Card className="rounded-md w-full !px-3 min-w-80">
       <div className="flex flex-row items-center m-4 place-content-between">
         <CardTitle className="text-xl font-bold min-w-36">{title}</CardTitle>
         <div className="flex flex-row gap-2 w-fit">
@@ -109,7 +109,7 @@ const ClaimWrapper = ({
   info: string;
   action: { e_name: string; time_stamp: string; remarks: string } | null;
 }) => {
-  const iconMap = {
+  const iconMap:any = {
     forward: <ContentPasteGoOutlined sx={{ fontSize: 36, marginRight: 0.5 }} />,
     outward: <TaskOutlined sx={{ fontSize: 40 }} />,
     inward: <FileOpenOutlined sx={{ fontSize: 40 }} />,
