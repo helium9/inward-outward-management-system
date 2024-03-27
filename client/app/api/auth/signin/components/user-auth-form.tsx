@@ -14,16 +14,57 @@ import { Label } from "@/components/ui/label"
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [formValues, setFormValues] = useState({
+    username: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+  // async function onSubmit(event: React.SyntheticEvent) {
+  //   event.preventDefault()
+  //   setIsLoading(true)
 
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
-  }
+  //   setTimeout(() => {
+  //     setIsLoading(false)
+  //   }, 3000)
+  // }
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setFormValues({ username: "", password: "" });
+
+      const res = await signIn("credentials", {
+        redirect: false,
+        username: formValues.username,
+        password: formValues.password,
+        callbackUrl,
+      });
+
+      setLoading(false);
+
+      console.log(res);
+      if (!res?.error) {
+        router.push(callbackUrl);
+      } else {
+        setError("invalid email or password");
+      }
+    } catch (error : any) {
+      setLoading(false);
+      setError(error);
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormValues({ ...formValues, [name]: value });
+};
+
 
   const searchParams = useSearchParams();
   const callbackUrl =  searchParams.get("callbackUrl") || "/";
@@ -33,20 +74,35 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Input
-              id="email"
-              placeholder="name@example.com"
-              type="email"
+              id="username"
+              placeholder="your username"
+              type="text"
               autoCapitalize="none"
-              autoComplete="email"
+              // autoComplete="email"
               autoCorrect="off"
+              name="username"
               disabled={isLoading}
+              value={formValues.username}
+              onChange={handleChange}
+            />
+            <Input
+              id="password"
+              placeholder="your password"
+              type="text"
+              autoCapitalize="none"
+              // autoComplete="email"
+              autoCorrect="off"
+              name = "password"
+              disabled={isLoading}
+              value={formValues.password}
+              onChange={handleChange}
             />
           </div>
           <Button disabled={isLoading}>
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Sign In with Email
+            Sign In with Credentials
           </Button>
         </div>
       </form>
@@ -56,7 +112,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
+            Or continue with email if you are an user
           </span>
         </div>
       </div>
