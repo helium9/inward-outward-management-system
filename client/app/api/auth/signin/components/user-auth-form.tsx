@@ -32,9 +32,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       <form onSubmit={onSubmit}>
         <div className="grid gap-2">
           <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
-              Email
-            </Label>
             <Input
               id="email"
               placeholder="name@example.com"
@@ -67,9 +64,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         {isLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <Icons.gitHub className="mr-2 h-4 w-4" />
+          <Icons.google className="mr-2 h-4 w-4" />
         )}{" "}
-        GitHub
+        Google
       </Button>
     </div>
   )

@@ -9,7 +9,7 @@ export default async function Home() {
     return (
       <>
         {session ? (
-            console.log(session?.user)
+            console.log(session)
         //   <UserCard user={session?.user} pagetype={"Home"} />
         ) : console.log("not signed in")}
       </>
