@@ -1,4 +1,6 @@
+"use client";
 import Image from "next/image";
+import axios from 'axios';
 import {
   Card,
   CardContent,
@@ -29,7 +31,7 @@ import {
   ContentPasteGoOutlined,
 } from "@mui/icons-material";
 import { Input } from "@nextui-org/react";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 const ListClaimWrapper = ({
   title,
@@ -123,7 +125,7 @@ const ClaimWrapper = ({
   info: string;
   action: { e_name: string; time_stamp: string; remarks: string } | null;
 }) => {
-  const iconMap:any = {
+  const iconMap: any = {
     forward: <ContentPasteGoOutlined sx={{ fontSize: 36, marginRight: 0.5 }} />,
     outward: <TaskOutlined sx={{ fontSize: 40 }} />,
     inward: <FileOpenOutlined sx={{ fontSize: 40 }} />,
@@ -154,6 +156,13 @@ const ClaimWrapper = ({
 };
 
 export default function Home() {
+  useEffect(() => {
+    async function getDB() {
+      const res = await axios.get('http://localhost:3000/api/demo');
+      console.log(res.data);
+    }
+    getDB();
+  }, []);
   return (
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="text-3xl font-extrabold my-4">Dashboard</div>

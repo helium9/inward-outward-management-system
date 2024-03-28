@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Meta {
+  id            String    @id @default(uuid())
+  inward_number Int
+  issue_date    DateTime  @default(now())
+  inward_date   DateTime?
+  ind_name      String    @db.VarChar(255)
+  dept_name     String    @db.VarChar(255)
+  party_name    String    @db.VarChar(255)
+  claimant_name String    @db.VarChar(255)
+  subject       String?   @db.VarChar(255)
+  amount        Int
+  advanced_req  Boolean?
+  managed_by_id Employee? @relation(fields: [alloted_to_id], references: [id])
+  alloted_to_id String?   @db.VarChar(255)
+  status        String    @db.VarChar(255)
+  history       History[]
+}
+
+model Employee {
+  id       String    @id @default(uuid())
+  name     String    @db.VarChar(255)
+  email    String    @db.VarChar(255)
+  managing Meta[]
+  history  History[]
+}
+
+model History {
+  id          String   @id @default(uuid())
+  meta_data   Meta     @relation(fields: [meta_id], references: [id])
+  meta_id     String   @db.VarChar(255)
+  action      String   @db.VarChar(255)
+  remarks     String?  @db.VarChar(255)
+  employee    Employee @relation(fields: [employee_id], references: [id])
+  employee_id String
+  time_stamp  DateTime @default(now())
+}
