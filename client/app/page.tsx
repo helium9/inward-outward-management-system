@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import axios from 'axios';
+import axios from "axios";
 import {
   Card,
   CardContent,
@@ -32,7 +32,8 @@ import {
 } from "@mui/icons-material";
 import { Input } from "@nextui-org/react";
 import { ReactNode, useEffect } from "react";
-
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 const ListClaimWrapper = ({
   title,
   condensed = false,
@@ -125,6 +126,7 @@ const ClaimWrapper = ({
   info: string;
   action: { e_name: string; time_stamp: string; remarks: string } | null;
 }) => {
+  //the action attribute in history must match the defined action type
   const iconMap: any = {
     forward: <ContentPasteGoOutlined sx={{ fontSize: 36, marginRight: 0.5 }} />,
     outward: <TaskOutlined sx={{ fontSize: 40 }} />,
@@ -156,13 +158,60 @@ const ClaimWrapper = ({
 };
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const [userInfo, setUserInfo] = useState<{
+    name: string | null | undefined;
+    email: string | null | undefined;
+    type: string | null | undefined;
+  }>({ name: "Unknown", email: "Unknown", type: "Unknown" });
+  const [newClaims, setNewClaims] = useState([]);
+  const [history, setHistory] = useState([]);
+  // console.log(history[0]);
   useEffect(() => {
-    async function getDB() {
-      const res = await axios.get('http://localhost:3000/api/demo');
-      console.log(res.data);
+    async function getUser(data: any) {
+      //define type later on
+      const res = await axios.get("http://localhost:3000/api/getUser", {
+        params: {
+          ...data,
+        },
+      });
+      return res.data;
     }
-    getDB();
-  }, []);
+
+    async function getDB(sessionData: any) {
+      const newClaim = await axios.get("http://localhost:3000/api/claims", {
+        params: {
+          ...sessionData,
+          condensed: true,
+          status: "new",
+        },
+      });
+      setNewClaims(newClaim.data);
+
+      const history = await axios.get("http://localhost:3000/api/history", {
+        params: {
+          ...sessionData,
+          condensed: true,
+        },
+      });
+      setHistory(history.data);
+
+      const currClaims = await axios.get("http://localhost:3000/api/claims", {
+        params: {
+          ...sessionData,
+          condensed: true,
+          status: "current",
+        },
+      });
+      console.log(currClaims);
+    }
+    if (session && status === "authenticated") {
+      getUser(session?.user).then((res) => {
+        setUserInfo(res);
+        getDB(session?.user);
+      });
+    }
+  }, [session]);
   return (
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="text-3xl font-extrabold my-4">Dashboard</div>
@@ -212,23 +261,25 @@ export default function Home() {
 
         <Card className="w-full sm:max-w-96 rounded-md sm:max-h-52">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">Welcome, Rishi</CardTitle>
+            <CardTitle className="text-xl font-bold">
+              Welcome, {userInfo.name ? userInfo.name : "unknown"}
+            </CardTitle>
             <CardDescription className="font-semibold text-zinc-500">
-              F/A Employee
+              {userInfo.type ? userInfo.type : "unknown"}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-row flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-8">
-            <div className="flex flex-row items-center">
+            {/* <div className="flex flex-row items-center">
               <span className="rounded-full bg-zinc-300 p-2 mr-2">
                 <Phone />
               </span>
               999999999
-            </div>
+            </div> */}
             <div className="flex flex-row items-center">
               <span className="rounded-full bg-zinc-300 p-2 mr-2">
                 <MailOutline />
               </span>
-              rishi@iiti.ac.in
+              {userInfo.email ? userInfo.email : "unknown"}
             </div>
           </CardContent>
           <CardFooter className="flex flex-row gap-4 text-zinc-500 text-xs">
@@ -237,76 +288,37 @@ export default function Home() {
           </CardFooter>
         </Card>
       </section>
+
       <section className="flex flex-col lg:flex-row gap-4 mt-12">
         <ListClaimWrapper title={"Action history"} condensed={false}>
-          <ClaimWrapper
-            type={"new"}
-            name={"Claim Name"}
-            info={"Claim Info"}
-            action={{
-              e_name: "User Name",
-              time_stamp: "10-03-24 15:03",
-              remarks: "Document is being forwarded for...",
-            }}
-          />
-          <ClaimWrapper
-            type={"stage"}
-            name={"Claim Name"}
-            info={"Claim Info"}
-            action={{
-              e_name: "User Name",
-              time_stamp: "10-03-24 15:03",
-              remarks: "No comments!",
-            }}
-          />
-          <ClaimWrapper
-            type={"inward"}
-            name={"Claim Name"}
-            info={"Claim Info"}
-            action={{
-              e_name: "User Name",
-              time_stamp: "10-03-24 15:03",
-              remarks: "Verification done, inward complete.",
-            }}
-          />
-          <ClaimWrapper
-            type={"outward"}
-            name={"Claim Name"}
-            info={"Claim Info"}
-            action={{
-              e_name: "User Name",
-              time_stamp: "10-03-24 15:03",
-              remarks: "All complete, outward complete.",
-            }}
-          />
+          {history &&
+            history.map((item, ind) => (
+              <ClaimWrapper
+                key={ind}
+                type={item.action}
+                name={item.meta_data.claimant_name}
+                info={item.meta_data.dept_name}
+                action={{
+                  e_name: item.employee.name,
+                  time_stamp: item.time_stamp,
+                  remarks: item.remarks ? item.remarks : "No remark.",
+                }}
+              />
+            ))}
         </ListClaimWrapper>
 
         <div>
           <ListClaimWrapper title={"Incoming claims"} condensed={true}>
-            <ClaimWrapper
-              type={"new"}
-              name={"Claim Name"}
-              info={"Claim Info"}
-              action={null}
-            />
-            <ClaimWrapper
-              type={"new"}
-              name={"Claim Name"}
-              info={"Claim Info"}
-              action={null}
-            />
-            <ClaimWrapper
-              type={"new"}
-              name={"Claim Name"}
-              info={"Claim Info"}
-              action={null}
-            />
-            <ClaimWrapper
-              type={"new"}
-              name={"Claim Name"}
-              info={"Claim Info"}
-              action={null}
-            />
+            {newClaims &&
+              newClaims.map((claim, ind) => (
+                <ClaimWrapper
+                  key={ind}
+                  type={"new"}
+                  name={claim.claimant_name as string}
+                  info={claim.dept_name as string}
+                  action={null}
+                />
+              ))}
           </ListClaimWrapper>
         </div>
       </section>
