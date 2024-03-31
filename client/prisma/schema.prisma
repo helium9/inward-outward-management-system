@@ -20,7 +20,7 @@ model Meta {
   inward_date   DateTime?
   ind_name      String    @db.VarChar(255)
   dept_name     String    @db.VarChar(255)
-  party_name    String    @db.VarChar(255)
+  party_name    String    @db.VarChar(255)    
   claimant_name String    @db.VarChar(255)
   subject       String?   @db.VarChar(255)
   amount        Int

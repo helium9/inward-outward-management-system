@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/auth/signin/form.tsx", "app/api/auth/signin/page1.tsx", "app/tracking/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/auth/signin/form.tsx", "app/api/auth/signin/page1.tsx", "app/tracking/page.jsx", "app/api/newClaim/claim.js"],
   "exclude": ["node_modules"]
 }
