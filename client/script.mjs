@@ -21,14 +21,15 @@ async function main() {
   //     remarks: 'Done nothing123',
   //     employee_id: '69bd5382-f951-40a8-9c19-4fc5835eb76e'
   // }})
-  // const res = await prisma.meta.findMany();
+  const res = await prisma.meta.findMany();
   // const res = await prisma.meta.findMany({orderBy:{issue_date:'desc'}, select: {claimant_name:true, dept_name:true}});
   // const res = await prisma.meta.update({
   //   where:{
-  //     id:'5215ce5d-6f3c-4404-a4a9-189f8d25dfa9'
+  //     id:'9ae9f64d-67f4-4e83-aae3-e45dc1a399ab'
   //   },
   //   data:{
-  //     status:'forward'
+  //     alloted_to_id:'69bd5382-f951-40a8-9c19-4fc5835eb76e',
+  //     subject:'paise dedde BKL.'
   //   }
   // });
   console.log(res);

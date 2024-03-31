@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  console.log(searchParams);
   if (searchParams.get("condensed") === "true") {
     if (searchParams.get("status") === "new") {
       const data = await prisma.meta.findMany({
@@ -17,36 +16,47 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(data, { status: 200 });
     } else if (searchParams.get("status") === "current") {
       const data = await prisma.meta.findMany({
-        where:{
-          NOT:[
-            {status:'new'},
-            {status:'outward'}
-          ]
+        where: {
+          NOT: [{ status: "new" }, { status: "outward" }],
         },
         select: {
-          status:true,
+          status: true,
           claimant_name: true,
           dept_name: true,
-          history:{
-            select:{
-              employee:{
-                select:{
-                  name:true
-                }
+          history: {
+            select: {
+              employee: {
+                select: {
+                  name: true,
+                },
               },
-              remarks:true,
-              time_stamp:true
+              remarks: true,
+              time_stamp: true,
             },
-            orderBy:{
-              time_stamp: 'desc'
+            orderBy: {
+              time_stamp: "desc",
             },
-            take:1
-          }
-        }
+            take: 1,
+          },
+        },
       });
-      console.log(data);
+      // console.log(data);
       return NextResponse.json(data, { status: 200 });
     }
+  } else {
+    console.log(searchParams);
+    const _count = await prisma.employee.count({
+      where: { email: searchParams.get("email") as string },
+    });
+    // console.log(_count);
+    if (_count !== 0) {
+      const metaData = await prisma.meta.findUnique({
+        include: { managed_by_id: { select: { name: true } } },
+        where: { id: searchParams.get("id") as string },
+      });
+      if(metaData?.alloted_to_id) delete metaData.alloted_to_id;
+      return NextResponse.json(metaData, { status: 200 });
+    }
+    return NextResponse.json([], { status: 200 });
   }
-  return NextResponse.json([], { status: 200 });
 }
