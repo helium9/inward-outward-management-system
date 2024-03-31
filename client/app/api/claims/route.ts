@@ -17,11 +17,34 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(data, { status: 200 });
     } else if (searchParams.get("status") === "current") {
       const data = await prisma.meta.findMany({
+        where:{
+          NOT:[
+            {status:'new'},
+            {status:'outward'}
+          ]
+        },
         select: {
+          status:true,
           claimant_name: true,
           dept_name: true,
+          history:{
+            select:{
+              employee:{
+                select:{
+                  name:true
+                }
+              },
+              remarks:true,
+              time_stamp:true
+            },
+            orderBy:{
+              time_stamp: 'desc'
+            },
+            take:1
+          }
         }
       });
+      console.log(data);
       return NextResponse.json(data, { status: 200 });
     }
   }
