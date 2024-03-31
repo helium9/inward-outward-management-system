@@ -7,18 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-    Phone,
-    MailOutline,
-    Search,
-    FilterAltOutlined,
-    ExpandCircleDownOutlined,
-    AssignmentOutlined,
-    FileOpenOutlined,
-    PostAddOutlined,
-    TaskOutlined,
-    ContentPasteGoOutlined,
-  } from "@mui/icons-material";
+import {AssignmentOutlined} from "@mui/icons-material";
+
 function Page() {
   return (
     <main className="p-2 px-4 sm:px-10 xl:px-24">
@@ -51,7 +41,7 @@ function Page() {
           <TableBody>
             <TableRow>
               <TableCell className="px-[75px] py-3">
-                <p className="text-lg font-semibold">Claimant details</p>
+                <p className="text-lg font-semibold">Indentor details</p>
                 <div className="flex flex-row">
                     <div className="flex flex-col mr-12"><p>Name</p><p>Department Name</p></div>
                     <div className="flex flex-col text-zinc-500"><p>Prof. N Bharath Ballal</p><p>Metalurgical Engineering and Material Science</p></div>
