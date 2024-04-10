@@ -8,10 +8,34 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { CopyIcon } from "@radix-ui/react-icons";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { AssignmentOutlined } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 function Page({ params }: { params: { id: string } }) {
   const { data: session, status } = useSession();
@@ -47,7 +71,6 @@ function Page({ params }: { params: { id: string } }) {
     if (session && status === "authenticated")
       getData(session?.user, params.id);
   }, [session]);
-
   return (
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="text-2xl font-extrabold my-4">Claim information</div>
@@ -130,6 +153,44 @@ function Page({ params }: { params: { id: string } }) {
             </TableBody>
           </Table>
         </div>
+      </section>
+      <section>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">Share</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Take Action</DialogTitle>
+              <DialogDescription>
+                Taking an action will change the current status of this claim.
+              </DialogDescription>
+            </DialogHeader>
+            <Select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Choose Action..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="forward">Forward</SelectItem>
+                  <SelectItem value="inward">Inward</SelectItem>
+                  {/* inward must be visible for !new claims */}
+                  <SelectItem value="outward">Outward</SelectItem>
+                  <SelectItem value="stage">Stage</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Label htmlFor="remarks">Remarks</Label>
+            <Textarea placeholder="Type your remarks here." id="remarks" />
+            <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </section>
     </main>
   );
