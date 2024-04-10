@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import FilterDialog from "@/components/FilterDialog";
 import { Button } from "@/components/ui/button";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+const filterLabels = {
+  inward_number:"Invoice number",
+  issue_date: "Issue Date",
+  ind_name:"Indentor name",
+  dept_name:"Department name",
+  party_name:"Party name",
+  claimant_name:"Claimant name",
+  subject:"Subject",
+  amount:"Amount",
+  status:"Status",
+  alloted_to_name:"Alloted to"
+}
 function Page({ params }: { params: { id: string } }) {
   const { data: session, status } = useSession();
   const [claimData, setClaimData] = useState({
@@ -71,6 +84,41 @@ function Page({ params }: { params: { id: string } }) {
     if (session && status === "authenticated")
       getData(session?.user, params.id);
   }, [session]);
+  const [date, setDate] = useState<Date>(); //date from filter options
+  const [filterData, setFilterData] = useState({
+    //state of selected filters
+    inward_number: "",
+    issue_date: "",
+    ind_name: "",
+    dept_name: "",
+    party_name: "",
+    claimant_name: "",
+    subject: "",
+    amount: "",
+    status: "",
+    alloted_to_name: "",
+  });
+
+  const handleFilterApply = () => {
+    console.log(filterData, date);
+    //write backend post request for fetching database here.
+  };
+  const handleFilterClear = () => {
+    setFilterData({
+      //state of selected filters
+      inward_number: "",
+      issue_date: "",
+      ind_name: "",
+      dept_name: "",
+      party_name: "",
+      claimant_name: "",
+      subject: "",
+      amount: "",
+      status: "",
+      alloted_to_name: "",
+    });
+    setDate(undefined);
+  };
   return (
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="text-2xl font-extrabold my-4">Claim information</div>
@@ -193,7 +241,15 @@ function Page({ params }: { params: { id: string } }) {
         </Dialog>
       </section>
       <section>
-        hi
+        <FilterDialog
+          date={date}
+          setDate={setDate}
+          filterData={filterData}
+          setFilterData={setFilterData}
+          handleFilterApply={handleFilterApply}
+          handleFilterClear={handleFilterClear}
+          labels={filterLabels}
+        />
       </section>
     </main>
   );

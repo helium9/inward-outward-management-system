@@ -42,7 +42,12 @@ function FilterDialog({
   setDate,
   handleFilterClear,
   handleFilterApply,
+  labels
 }) {
+  const handleValueChange = (key, newValue) => {
+    setFilterData({ ...filterData, [key]: newValue });
+  };
+  console.log(labels, filterData);
   return (
     <Sheet>
       <SheetTrigger
@@ -82,7 +87,7 @@ function FilterDialog({
                   {date ? (
                     format(date, "PPP")
                   ) : (
-                    <span className="text-slate-500">Issue Date</span>
+                    <span className="text-slate-500">{labels.issue_date}</span>
                   )}
                 </Button>
               </PopoverTrigger>
@@ -90,114 +95,21 @@ function FilterDialog({
                 <Calendar mode="single" selected={date} onSelect={setDate} />
               </PopoverContent>
             </Popover>
-            <Input
-              label="Invoice number"
-              className="w-full"
-              size="sm"
-              variant="bordered"
-              radius="sm"
-              value={filterData.inward_number}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, inward_number: newValue })
-              }
-              isClearable
-            />
-            <Input
-              label="Status"
-              className="w-full"
-              variant="bordered"
-              size="sm"
-              radius="sm"
-              value={filterData.status}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, status: newValue })
-              }
-              isClearable
-            />
-            <Input
-              label="Indentor name"
-              className="w-full"
-              variant="bordered"
-              size="sm"
-              radius="sm"
-              value={filterData.ind_name}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, ind_name: newValue })
-              }
-              isClearable
-            />
-            <Input
-              label="Department name"
-              className="w-full"
-              variant="bordered"
-              size="sm"
-              radius="sm"
-              value={filterData.dept_name}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, dept_name: newValue })
-              }
-              isClearable
-            />
-            <Input
-              label="Subject"
-              className="w-full"
-              variant="bordered"
-              size="sm"
-              radius="sm"
-              value={filterData.subject}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, subject: newValue })
-              }
-              isClearable
-            />
-            <Input
-              label="Claimant name"
-              className="w-full"
-              variant="bordered"
-              size="sm"
-              radius="sm"
-              value={filterData.claimant_name}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, claimant_name: newValue })
-              }
-              isClearable
-            />
-            <Input
-              label="Party name"
-              className="w-full"
-              variant="bordered"
-              size="sm"
-              radius="sm"
-              value={filterData.party_name}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, party_name: newValue })
-              }
-              isClearable
-            />
-            <Input
-              label="Amount"
-              className="w-full"
-              variant="bordered"
-              size="sm"
-              radius="sm"
-              value={filterData.amount}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, amount: newValue })
-              }
-              isClearable
-            />
-            <Input
-              label="Alloted to"
-              className="w-full"
-              variant="bordered"
-              size="sm"
-              radius="sm"
-              value={filterData.alloted_to_name}
-              onValueChange={(newValue) =>
-                setFilterData({ ...filterData, alloted_to_name: newValue })
-              }
-              isClearable
-            />
+            {Object.keys(filterData).map((key) => {
+              console.log(key);
+              return((key!=='issue_date')&&
+              <Input
+                key={key} // Assign a unique key to each Input component
+                label={labels[key]} // Convert key to human-readable label
+                className="w-full"
+                size="sm"
+                variant="bordered"
+                radius="sm"
+                value={filterData[key]}
+                onValueChange={(newValue) => handleValueChange(key, newValue)}
+                isClearable
+              />
+            )})}
           </div>
         </ScrollArea>
         <SheetFooter>

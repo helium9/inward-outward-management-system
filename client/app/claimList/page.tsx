@@ -109,6 +109,19 @@ const ClaimRow = ({
   );
 };
 
+const filterLabels = {
+  inward_number:"Invoice number",
+  issue_date: "Issue Date",
+  ind_name:"Indentor name",
+  dept_name:"Department name",
+  party_name:"Party name",
+  claimant_name:"Claimant name",
+  subject:"Subject",
+  amount:"Amount",
+  status:"Status",
+  alloted_to_name:"Alloted to"
+}
+
 function Page() {
   const [date, setDate] = React.useState<Date>(); //date from filter options
   const [filterData, setFilterData] = useState({
@@ -166,6 +179,7 @@ function Page() {
             setFilterData={setFilterData}
             handleFilterApply={handleFilterApply}
             handleFilterClear={handleFilterClear}
+            labels={filterLabels}
           />
           <Input
             size="sm"
