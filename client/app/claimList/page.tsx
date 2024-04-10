@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import FilterDialog from "@/components/FilterDialog";
 import {
   Popover,
   PopoverContent,
@@ -110,7 +111,8 @@ const ClaimRow = ({
 
 function Page() {
   const [date, setDate] = React.useState<Date>(); //date from filter options
-  const [filterData, setFilterData] = useState({ //state of selected filters
+  const [filterData, setFilterData] = useState({
+    //state of selected filters
     inward_number: "",
     issue_date: "",
     ind_name: "",
@@ -120,15 +122,16 @@ function Page() {
     subject: "",
     amount: "",
     status: "",
-    alloted_to_name: ""
+    alloted_to_name: "",
   });
-  
-  const handleFilterApply = ()=>{
+
+  const handleFilterApply = () => {
     console.log(filterData, date);
     //write backend post request for fetching database here.
-  }
-  const handleFilterClear = ()=>{
-    setFilterData({ //state of selected filters
+  };
+  const handleFilterClear = () => {
+    setFilterData({
+      //state of selected filters
       inward_number: "",
       issue_date: "",
       ind_name: "",
@@ -138,10 +141,10 @@ function Page() {
       subject: "",
       amount: "",
       status: "",
-      alloted_to_name: ""
+      alloted_to_name: "",
     });
     setDate(undefined);
-  }
+  };
   return (
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="my-4 flex flex-row items-center">
@@ -156,178 +159,14 @@ function Page() {
               Show current user
             </label>
           </div>
-          <Sheet>
-            <SheetTrigger
-              asChild
-              className={`flex flex-row items-center sm:min-w-32`}
-            >
-              <Button
-                variant="outline"
-                className={`bg-slate-100 p-2 text-zinc-600 h-8 border-zinc-300 m-0 rounded w-fit sm:min-w-32`}
-              >
-                <div className="flex-row items-center hidden sm:flex w-full">
-                  <FilterAltOutlined />
-                  <p className="pl-1 pr-2 w-full text-left">Filter</p>
-                  <ExpandCircleDownOutlined sx={{ fontSize: 16 }} />
-                </div>
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Search Filters</SheetTitle>
-                <SheetDescription>
-                  Filter content based on each field.
-                </SheetDescription>
-              </SheetHeader>
-              <ScrollArea className="h-5/6 pr-3">
-                <div className="flex flex-col my-4 gap-2">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] justify-start text-left font-normal border-2 h-12 w-full",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4 text-slate-500" />
-                        {date ? (
-                          format(date, "PPP")
-                        ) : (
-                          <span className="text-slate-500">Issue Date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <Input
-                    label="Invoice number"
-                    className="w-full"
-                    size="sm"
-                    variant="bordered"
-                    radius="sm"
-                    value={filterData.inward_number}
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, inward_number: newValue })
-                    }
-                    isClearable
-                  />
-                  <Input
-                    label="Status"
-                    className="w-full"
-                    variant="bordered"
-                    size="sm"
-                    radius="sm"
-                    value={filterData.status}
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, status: newValue })
-                    }
-                    isClearable
-                  />
-                  <Input
-                    label="Indentor name"
-                    className="w-full"
-                    variant="bordered"
-                    size="sm"
-                    radius="sm"
-                    value={filterData.ind_name}
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, ind_name: newValue })
-                    }
-                    isClearable
-                  />
-                  <Input
-                    label="Department name"
-                    className="w-full"
-                    variant="bordered"
-                    size="sm"
-                    radius="sm"
-                    value={filterData.dept_name}
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, dept_name: newValue })
-                    }
-                    isClearable
-                  />
-                  <Input
-                    label="Subject"
-                    className="w-full"
-                    variant="bordered"
-                    size="sm"
-                    radius="sm"
-                    value={filterData.subject}
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, subject: newValue })
-                    }
-                    isClearable
-                  />
-                  <Input
-                    label="Claimant name"
-                    className="w-full"
-                    variant="bordered"
-                    size="sm"
-                    radius="sm"
-                    value={filterData.claimant_name}
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, claimant_name: newValue })
-                    }
-                    isClearable
-                  />
-                  <Input
-                    label="Party name"
-                    className="w-full"
-                    variant="bordered"
-                    size="sm"
-                    radius="sm"
-                    value={filterData.party_name}
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, party_name: newValue })
-                    }
-                    isClearable
-                  />
-                  <Input
-                    label="Amount"
-                    className="w-full"
-                    variant="bordered"
-                    size="sm"
-                    radius="sm"
-                    value={filterData.amount}
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, amount: newValue })
-                    }
-                    isClearable
-                  />
-                  <Input
-                    label="Alloted to"
-                    className="w-full"
-                    variant="bordered"
-                    size="sm"
-                    radius="sm"
-                    value={filterData.alloted_to_name
-                    }
-                    onValueChange={(newValue) =>
-                      setFilterData({ ...filterData, alloted_to_name: newValue })
-                    }
-                    isClearable
-                  />
-                </div>
-              </ScrollArea>
-              <SheetFooter>
-                <Button className="bg-white text-zinc-700 border-1 hover:bg-zinc-200" onClick={handleFilterClear}>
-                  Clear
-                </Button>
-                <SheetClose asChild>
-                  <Button type="submit" onClick={handleFilterApply}>Apply</Button>
-                </SheetClose>
-              </SheetFooter>
-            </SheetContent>
-          </Sheet>
-
+          <FilterDialog
+            date={date}
+            setDate={setDate}
+            filterData={filterData}
+            setFilterData={setFilterData}
+            handleFilterApply={handleFilterApply}
+            handleFilterClear={handleFilterClear}
+          />
           <Input
             size="sm"
             variant="bordered"

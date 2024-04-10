@@ -157,7 +157,7 @@ function Page({ params }: { params: { id: string } }) {
       <section>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">Share</Button>
+            <Button variant="outline">Actions</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -191,6 +191,9 @@ function Page({ params }: { params: { id: string } }) {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      </section>
+      <section>
+        hi
       </section>
     </main>
   );
