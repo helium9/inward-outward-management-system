@@ -24,13 +24,16 @@ export async function GET(request: NextRequest) {
   return NextResponse.json([], { status: 200 });
 }
 
-export async function POST(request: NextRequest){
+export async function POST(request: NextRequest) {
   const data = await request.json();
   // console.log(data);
-  if(data!==null){
-    const upload = await prisma.history.create({data:data});
-    // console.log(upload);
-    return NextResponse.json("success", {status:200});
+  if (data !== null) {
+    const upload = await prisma.history.create({ data: data });
+    const update = await prisma.meta.update({
+      where: { id: data.meta_id },
+      data: { status: data.action, alloted_to_id: data.employee_id },
+    });
+    return NextResponse.json("success", { status: 200 });
   }
-  return NextResponse.json("no data", {status:400});
+  return NextResponse.json("no data", { status: 400 });
 }
