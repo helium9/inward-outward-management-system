@@ -27,7 +27,7 @@ const ClaimWrapper = ({
   const iconMap: any = {
     forward: <ContentPasteGoOutlined sx={{ fontSize: 36, marginRight: 0.5 }} />,
     outward: <TaskOutlined sx={{ fontSize: 40 }} />,
-    inward: <FileOpenOutlined sx={{ fontSize: 40 }} />,
+    inward: <FileOpenOutlined sx={{ fontSize: 38 }} />,
     new: <PostAddOutlined sx={{ fontSize: 40 }} />,
     stage: <AssignmentOutlined sx={{ fontSize: 40 }} />,
   };

@@ -84,11 +84,11 @@ export default function Home() {
               type={data.status}
               name={data.claimant_name}
               info={data.dept_name}
-              action={{
-                e_name: data.history[0].employee.name,
-                time_stamp: data.history[0].time_stamp,
-                remarks: data.history[0].remarks,
-              }}
+              // action={{
+              //   e_name: data.history[0].employee.name,
+              //   time_stamp: data.history[0].time_stamp,
+              //   remarks: data.history[0].remarks,
+              // }}
             />
           ))}
         </ListClaimWrapper>

@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Phone,
   MailOutline,
@@ -104,7 +105,7 @@ const ListClaimWrapper = ({
           </div>
         </div>
       </div>
-      <CardContent className="flex flex-col">{children}</CardContent>
+      <CardContent className="flex flex-col"><ScrollArea className="h-48">{children}</ScrollArea></CardContent>
       <CardFooter className="text-zinc-500 text-xs underline">
         <p>View More</p>
       </CardFooter>
