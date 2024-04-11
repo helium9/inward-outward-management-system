@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data, { status: 200 });
   } else {
     const histories = await prisma.history.findMany({
-      distinct: ['meta_id'],
+      distinct: ["meta_id"],
       include: {
         meta_data: true,
         employee: true,

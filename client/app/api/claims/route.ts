@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(data, { status: 200 });
     }
   } else {
-    console.log(searchParams);
+    // console.log(searchParams);
     const _count = await prisma.employee.count({
       where: { email: searchParams.get("email") as string },
     });

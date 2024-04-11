@@ -15,7 +15,7 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import { Input } from "@nextui-org/react";
 import { Label } from "@/components/ui/label";
 import { AssignmentOutlined } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import {
@@ -59,7 +59,7 @@ import {
   ContentPasteGoOutlined,
   ArrowOutward,
 } from "@mui/icons-material";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 
 const filterLabels = {
   inward_number: "Invoice number",
@@ -111,13 +111,15 @@ const ClaimRow = ({
         <p className="my-2 font-semibold">{takenBy}</p>
       </TableCell>
       <TableCell>
+        <div className="flex flex-row items-center">
         <p
           className={`my-2 font-semibold ${
-            !expanded && `overflow-hidden h-10 text-ellipsis`
+            !expanded && `overflow-hidden h-5 text-ellipsis`
           }`}
         >
           {remarks}
         </p>
+        </div>
       </TableCell>
       <TableCell>
         <div className="flex flex-col gap-2">
@@ -146,10 +148,11 @@ function Page({ params }: { params: { id: string } }) {
     status: "not available",
     subject: "not available",
   });
-  console.log(claimData);
+  const [historyData, setHistoryData] = useState([]);
+  // console.log(claimData);
   useEffect(() => {
-    console.log(params.id);
-    console.log(session);
+    // console.log(params.id);
+    // console.log(session);
 
     async function getData(sessionData: any, id: string) {
       const claimInfo = await axios.get("http://localhost:3000/api/claims", {
@@ -159,11 +162,17 @@ function Page({ params }: { params: { id: string } }) {
         },
       });
       setClaimData(claimInfo.data);
+      const historyInfo = await axios.get("http://localhost:3000/api/claimHistory", { params: { meta_id: id }});
+      setHistoryData(historyInfo.data);
+      const empList = await axios.get("http://localhost:3000/api/employees");
+      setEmployees(empList.data);
     }
+
     if (session && status === "authenticated")
       getData(session?.user, params.id);
   }, [session]);
   const [date, setDate] = useState<Date>(); //date from filter options
+  const [employees, setEmployees] = useState([]);
   const [filterData, setFilterData] = useState({
     //state of selected filters
     inward_number: "",
@@ -179,7 +188,7 @@ function Page({ params }: { params: { id: string } }) {
   });
 
   const handleFilterApply = () => {
-    console.log(filterData, date);
+    // console.log(filterData, date);
     //write backend post request for fetching database here.
   };
   const handleFilterClear = () => {
@@ -198,10 +207,15 @@ function Page({ params }: { params: { id: string } }) {
     });
     setDate(undefined);
   };
-  const [expanded, setExpanded] = useState(false); //this is a single variable that'll be matched to the key in array map to decide which row is expanded.
-  const handleExpandHistory = () => {
-    setExpanded((expanded) => !expanded);
+  const [expanded, setExpanded] = useState(-1); //this is a single variable that'll be matched to the key in array map to decide which row is expanded.
+  const handleExpandHistory = (key) => {
+    setExpanded(key);
   };
+  const [actionTaken, setActionTaken] = useState({employee_id:"", remarks:"", action:""});
+  const handleActionSubmit=()=>{
+    console.log(actionTaken);
+    axios.post("http://localhost:3000/api/claimHistory", {meta_id:params.id, ...actionTaken}).then((res)=>console.log(res.data));
+  }
   return (
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="text-2xl font-extrabold my-4">Claim information</div>
@@ -227,15 +241,14 @@ function Page({ params }: { params: { id: string } }) {
                         </span>
                       </div>
                       <div className="flex flex-col text-right">
-                      <p>Status: {claimData.status}</p>
-                      <p><EditIcon /></p>
+                        <p>Status: {claimData.status}</p>
                       </div>
                     </div>
                   </div>
                 </TableHead>
               </TableRow>
             </TableHeader>
-            
+
             <TableBody>
               <TableRow>
                 <TableCell className="px-[75px] py-3">
@@ -294,7 +307,7 @@ function Page({ params }: { params: { id: string } }) {
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="w-32 flex flex-row gap-1 font-semibold bg-gradient-to-b from-zinc-100 to-zinc-300"
+              className="w-32 flex flex-row font-semibold bg-gradient-to-b from-zinc-100 to-zinc-300"
             >
               Actions <ArrowOutward sx={{ fontSize: 20 }} />
             </Button>
@@ -306,8 +319,8 @@ function Page({ params }: { params: { id: string } }) {
                 Taking an action will change the current status of this claim.
               </DialogDescription>
             </DialogHeader>
-            <Select>
-              <SelectTrigger className="w-[180px]">
+            <Select onValueChange={(e)=>setActionTaken({...actionTaken, action:e})}>
+              <SelectTrigger className="w-1/2">
                 <SelectValue placeholder="Choose Action..." />
               </SelectTrigger>
               <SelectContent>
@@ -320,15 +333,27 @@ function Page({ params }: { params: { id: string } }) {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Label htmlFor="remarks">Remarks</Label>
+            <Label className="mt-2" htmlFor="remarks">Remarks</Label>
             <Textarea
               placeholder="Type your remarks here."
+              onChange={(e)=>setActionTaken({...actionTaken, remarks:e.target.value})}
               id="remarks"
               className="h-36"
             />
+            <Label className="mt-2" htmlFor="allot">Allot to</Label>
+            <Select onValueChange={(e)=>setActionTaken({...actionTaken, employee_id:e})}>
+              <SelectTrigger className="w-3/4">
+                <SelectValue placeholder="Choose employee..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {(employees.length!==0) && (employees.map((item, ind)=>(<SelectItem key={ind} value={item?.id}>{item?.name}</SelectItem>)))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             <DialogFooter className="sm:justify-end">
               <DialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button type="button" variant="secondary" onClick={handleActionSubmit}>
                   Submit
                 </Button>
               </DialogClose>
@@ -385,28 +410,18 @@ function Page({ params }: { params: { id: string } }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <ClaimRow
-                action="forward"
-                takenBy="Aditya Kshitiz"
-                remarks="Received a reimbursement request for a life-size cardboard cutout of the  boss. Approved, but let's hope it doesn't start making executive  decisions around here! Received a reimbursement request for a life-size cardboard cutout of the  boss. Approved, but let's hope it doesn't start making executive  decisions around here!"
-                dateTime="10-03-24 15:03"
-                expanded={expanded}
-                onClick={handleExpandHistory}
-              />
-              <ClaimRow
-                action="forward"
-                takenBy="Aditya Kshitiz"
-                remarks="Received a reimbursement request for a life-size cardboard cutout of the  boss. Approved, but let's hope it doesn't start making executive  decisions around here! Received a reimbursement request for a life-size cardboard cutout of the  boss. Approved, but let's hope it doesn't start making executive  decisions around here!"
-                dateTime="10-03-24 15:03"
-                expanded={false}
-              />
-              <ClaimRow
-                action="forward"
-                takenBy="Aditya Kshitiz"
-                remarks="Received a reimbursement request for a life-size cardboard cutout of the  boss. Approved, but let's hope it doesn't start making executive  decisions around here! Received a reimbursement request for a life-size cardboard cutout of the  boss. Approved, but let's hope it doesn't start making executive  decisions around here!"
-                dateTime="10-03-24 15:03"
-                expanded={false}
-              />
+              {historyData.length !== 0 &&
+                historyData.map((item, ind) => (
+                  <ClaimRow
+                    key={ind}
+                    action={item?.action}
+                    takenBy={item?.employee?.name} // Use optional chaining here
+                    remarks={item.remarks}
+                    dateTime={item.time_stamp}
+                    expanded={(ind===expanded)}
+                    onClick={()=>{handleExpandHistory(ind)}}
+                  />
+                ))}
             </TableBody>
           </Table>
         </div>

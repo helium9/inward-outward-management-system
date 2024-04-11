@@ -47,7 +47,7 @@ function FilterDialog({
   const handleValueChange = (key, newValue) => {
     setFilterData({ ...filterData, [key]: newValue });
   };
-  console.log(labels, filterData);
+  // console.log(labels, filterData);
   return (
     <Sheet>
       <SheetTrigger
@@ -96,7 +96,7 @@ function FilterDialog({
               </PopoverContent>
             </Popover>
             {Object.keys(filterData).map((key) => {
-              console.log(key);
+              // console.log(key);
               return((key!=='issue_date')&&
               <Input
                 key={key} // Assign a unique key to each Input component
