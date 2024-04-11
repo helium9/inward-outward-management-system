@@ -35,6 +35,7 @@ model Employee {
   id       String    @id @default(uuid())
   name     String    @db.VarChar(255)
   email    String    @db.VarChar(255)
+  isAdmin  Boolean?
   managing Meta[]
   history  History[]
 }
@@ -49,3 +50,5 @@ model History {
   employee_id String
   time_stamp  DateTime @default(now())
 }
+
+

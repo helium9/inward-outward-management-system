@@ -1,6 +1,9 @@
 import type { NextAuthOptions } from "next-auth";
+import { PrismaClient } from "@prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { Employee } from ".prisma/client";
+const prisma = new PrismaClient();
 
 export const options: NextAuthOptions = {
   pages: {
@@ -15,9 +18,9 @@ export const options: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         username: {
-          label: "Username:",
-          type: "text",
-          placeholder: "your-cool-username",
+          label: "Email:",
+          type: "email",
+          placeholder: "your-cool-email",
         },
         password: {
           label: "Password:",
@@ -26,20 +29,34 @@ export const options: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        // This is where you need to retrieve user data
-        // to verify with credentials
-        // Docs: https://next-auth.js.org/configuration/providers/credentials
-        const user = { id: "42", name: "Charnav Jain", password: "nextauth" };
+        // const connect = await mongoose.connect(connection.connection);
 
-        if (
-          credentials?.username === user.name &&
-          credentials?.password === user.password
-        ) {
-          return user;
-        } else {
-          return null;
-        }
-      },
-    }),
+        try {
+            // Find user by username
+            const user = await prisma.employee.findUnique({
+              where: {
+                email: credentials.email,
+              },
+            });
+
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            // Compare hashed password with provided password using bcrypt
+            // const passwordMatch = await bcrypt.compare(credentials.password, user.password);
+
+            if (credentials?.password !== process.env.password || user.isAdmin) {
+                throw new Error('Invalid credentials');
+            }
+
+            // If credentials are valid, return user
+            return user;
+        } catch (error) {
+            throw error;
+        } 
+    }
+})
+
   ],
 };
