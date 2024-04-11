@@ -1,26 +1,29 @@
+export default function RightStatus({ heading, employee }) {
+  const dateTime = new Date(heading.time_stamp);
+  const date = dateTime.toLocaleDateString(); 
+  const time = dateTime.toLocaleTimeString();
 
-export default function RightStatus({heading}) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 w-[500px]">
       <div className="flex justify-between">
-        <p className="text-xl font-medium font-dmSans">{heading}</p>
-        <p>10-01-24<br/>15:03</p>
+        <p className="text-xl font-medium font-dmSans">{heading.action}</p>
+        <p>{date}<br/>{time}</p>
       </div>
       <hr className="my-4" />
       <div className="flex flex-col">
         <div className="flex justify-between">
-            <p className="text-base font-medium font-dmSans">Assigned by</p>
-            <p>Admin</p>
+            <p className="text-base font-medium font-dmSans">Forwarded By</p>
+            <p>{heading.employee.name}</p>
         </div>
         <div className="flex justify-between">
-            <p className="text-base font-medium font-dmSans">Assigned to</p>
-            <p>F/A employee_11</p>
+            <p className="text-base font-medium font-dmSans">Forwarded to</p>
+            <p>{employee.name}</p>
         </div>  
         <div className="flex justify-between">
             <p className="text-base font-medium font-dmSans">Remarks</p>
-            <p>The claim has been inwarded</p>
+            <p>{heading.remarks}</p>
         </div> 
       </div>
     </div>
-  )
+  );
 }

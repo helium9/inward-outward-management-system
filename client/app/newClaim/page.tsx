@@ -219,7 +219,7 @@ export default function page() {
             isClearable
             type="integer"
             variant="bordered"
-            placeholder="$0"
+            placeholder="Rs.0"
             defaultValue=""
             // onClear={() => console.log("input cleared")}
             name = "amount"
@@ -237,7 +237,7 @@ export default function page() {
         </Button>
         
       </section>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   );
 }

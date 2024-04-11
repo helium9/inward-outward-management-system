@@ -227,10 +227,15 @@ const Page: React.FC = () => {
     alloted_to_name: "",
   });
 
-  const handleFilterApply = () => {
-    console.log(filterData, date);
-    //write backend post request for fetching database here.
+  const handleFilterApply = async () => {
+    try {
+      const response = await axios.post('/api/filter', filterData); // Send filter data to backend
+      setHistories(response.data); // Update state with filtered data
+    } catch (error) {
+      console.error('Error filtering histories:', error);
+    }
   };
+  
   const handleFilterClear = () => {
     setFilterData({
       //state of selected filters
@@ -257,7 +262,7 @@ const Page: React.FC = () => {
 
   const fetchHistories = async () => {
     try {
-      const response = await axios.get('/api/claimList');
+      const response = await axios.get('/api/history');
       setHistories(response.data);
     } catch (error) {
       console.error('Error fetching histories:', error);
@@ -294,7 +299,7 @@ const Page: React.FC = () => {
       <Navbar/>
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="my-4 flex flex-row items-center">
-        <p className="text-3xl font-bold">Current Claims</p>
+        <p className="text-3xl font-bold">History</p>
         <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
           <div className="flex items-center min-w-40 space-x-2">
             <Checkbox id="terms" />

@@ -59,6 +59,8 @@ import {
   ContentPasteGoOutlined,
   ArrowOutward,
 } from "@mui/icons-material";
+import EditIcon from '@mui/icons-material/Edit';
+
 const filterLabels = {
   inward_number: "Invoice number",
   issue_date: "Issue Date",
@@ -224,12 +226,16 @@ function Page({ params }: { params: { id: string } }) {
                           <p> &nbsp; {claimData.issue_date.substring(0, 10)}</p>
                         </span>
                       </div>
+                      <div className="flex flex-col text-right">
                       <p>Status: {claimData.status}</p>
+                      <p><EditIcon /></p>
+                      </div>
                     </div>
                   </div>
                 </TableHead>
               </TableRow>
             </TableHeader>
+            
             <TableBody>
               <TableRow>
                 <TableCell className="px-[75px] py-3">
@@ -306,11 +312,11 @@ function Page({ params }: { params: { id: string } }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="forward">Forward</SelectItem>
                   <SelectItem value="inward">Inward</SelectItem>
+                  <SelectItem value="forward">Forward</SelectItem>
+                  <SelectItem value="stage">Stage</SelectItem>
                   {/* inward must be visible for !new claims */}
                   <SelectItem value="outward">Outward</SelectItem>
-                  <SelectItem value="stage">Stage</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
