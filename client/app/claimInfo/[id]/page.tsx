@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { Input } from "@nextui-org/react";
 import { Label } from "@/components/ui/label";
-import { AssignmentOutlined } from "@mui/icons-material";
+import { AssignmentOutlined, LastPage, FirstPage } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
@@ -216,6 +216,8 @@ function Page({ params }: { params: { id: string } }) {
     });
     setDate(undefined);
   };
+  const [activePage, setActivePage] = useState(1);
+  console.log(activePage);
   const [expanded, setExpanded] = useState(-1); //this is a single variable that'll be matched to the key in array map to decide which row is expanded.
   const handleExpandHistory = (key) => {
     setExpanded(key);
@@ -442,24 +444,36 @@ function Page({ params }: { params: { id: string } }) {
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href="#" />
+              <PaginationPrevious href="#"  onClick={()=>{ if(activePage > 1){setActivePage(activePage-1)}}}/>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
+              <PaginationLink href="#" onClick={ ()=> setActivePage(1)}><FirstPage/></PaginationLink>
             </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                2
+            {activePage >=1 &&
+
+
+              <PaginationItem>
+              <PaginationLink isActive href="#">{activePage }</PaginationLink>
+            </PaginationItem>      }      
+            
+
+            {activePage +1>=1 && <PaginationItem>
+              <PaginationLink href="#" onClick={ ()=> setActivePage(activePage +1)} >
+                {activePage +1}
               </PaginationLink>
-            </PaginationItem>
+            </PaginationItem> }
+            { activePage +2 >=1 &&
             <PaginationItem>
-              <PaginationLink href="#">3</PaginationLink>
+              <PaginationLink href="#" onClick={()=> setActivePage(activePage +2)}>{activePage+2}</PaginationLink>
+            </PaginationItem> }
+            <PaginationItem>
+              <PaginationLink href="#" onClick={ ()=> setActivePage(activePage)}><LastPage/></PaginationLink>
             </PaginationItem>
             <PaginationItem>
               <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
-              <PaginationNext href="#" />
+              <PaginationNext href="#"  onClick={()=> setActivePage(activePage+1)}/>
             </PaginationItem>
           </PaginationContent>
         </Pagination>

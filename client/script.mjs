@@ -21,7 +21,14 @@ async function main() {
   //     remarks: 'done. verified.',
   //     employee_id: '69bd5382-f951-40a8-9c19-4fc5835eb76e'
   // }})
-  const res = await prisma.history.findMany();
+  //   const res = await prisma.employee.create({
+  //   data:{
+
+  //     name     : "Arnav",
+  //     email    : "admin@admin.com",
+  //     isAdmin  : true
+  // }})
+  // const res = await prisma.history.findMany();
   // const res = await prisma.meta.findMany({orderBy:{issue_date:'desc'}, select: {claimant_name:true, dept_name:true}});
   // const res = await prisma.meta.update({
   //   where:{
@@ -39,11 +46,6 @@ async function main() {
   //     meta_id: "9ae9f64d-67f4-4e83-aae3-e45dc1a399ab",
   //   },
   // });
-  // const res = await prisma.employee.create({data:{
-  //   name:"Aditya Kshitiz",
-  //   email:"adityakshitiz2017@gmail.com",
-  //   isAdmin:true
-  // }})
   // const res=await prisma.employee.findMany();
   console.log(res);
 }
