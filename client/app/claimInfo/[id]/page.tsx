@@ -80,6 +80,7 @@ const ClaimRow = ({
   remarks,
   dateTime,
   expanded,
+  meta_id,
   onClick,
 }: {
   action: string;
@@ -96,6 +97,11 @@ const ClaimRow = ({
     stage: <AssignmentOutlined sx={{ fontSize: 40 }} />,
   };
   const icon = iconMap[action] || null;
+  const handleRevert=(dateTime:string, meta_id:string)=>{
+    console.log(dateTime, meta_id);
+    axios.post("http://localhost:3000/api/claimHistory", {mode:"delete", meta_id:meta_id, time_stamp:dateTime}).then((res)=>console.log(res.data));
+  }
+
   //adding margin or padding in any table component doesn't work.
   return (
     <TableRow onClick={onClick}>
@@ -124,7 +130,7 @@ const ClaimRow = ({
       <TableCell>
         <div className="flex flex-col gap-2">
           <p>{dateTime}</p>
-          {expanded && <u>Revert Changes?</u>}
+          {expanded && <button onClick={()=>handleRevert(dateTime, meta_id)} className="w-fit"><u>Revert Changes?</u></button>}
         </div>
       </TableCell>
     </TableRow>
@@ -214,7 +220,7 @@ function Page({ params }: { params: { id: string } }) {
   const [actionTaken, setActionTaken] = useState({employee_id:"", remarks:"", action:""});
   const handleActionSubmit=()=>{
     console.log(actionTaken);
-    axios.post("http://localhost:3000/api/claimHistory", {meta_id:params.id, ...actionTaken}).then((res)=>console.log(res.data));
+    axios.post("http://localhost:3000/api/claimHistory", {mode:"add", meta_id:params.id, ...actionTaken}).then((res)=>console.log(res.data));
   }
   return (
     <main className="p-2 px-4 sm:px-10 xl:px-24">
@@ -419,6 +425,7 @@ function Page({ params }: { params: { id: string } }) {
                     remarks={item.remarks}
                     dateTime={item.time_stamp}
                     expanded={(ind===expanded)}
+                    meta_id={item?.meta_id}
                     onClick={()=>{handleExpandHistory(ind)}}
                   />
                 ))}
