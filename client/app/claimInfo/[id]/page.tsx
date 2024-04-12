@@ -16,7 +16,7 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import { Input } from "@nextui-org/react";
 import { Label } from "@/components/ui/label";
 import { AssignmentOutlined } from "@mui/icons-material";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import Footer from "@/components/Footer";
@@ -103,7 +103,8 @@ const ClaimRow = ({
     console.log(dateTime, meta_id);
     axios.post("http://localhost:3000/api/claimHistory", {mode:"delete", meta_id:meta_id, time_stamp:dateTime}).then((res)=>console.log(res.data));
   }
-
+  const [activePage, setActivePage] = useState(1);
+  console.log(activePage);
   //adding margin or padding in any table component doesn't work.
   return (
     <TableRow onClick={onClick}>
