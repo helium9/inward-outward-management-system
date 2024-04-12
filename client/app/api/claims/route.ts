@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       const data = await prisma.meta.findMany({
         where: { status: "new" },
         orderBy: { issue_date: "desc" },
-        select: { claimant_name: true, dept_name: true },
+        select: { id:true, claimant_name: true, dept_name: true },
       });
       return NextResponse.json(data, { status: 200 });
     } else if (searchParams.get("status") === "current") {
@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
           NOT: [{ status: "new" }, { status: "outward" }],
         },
         select: {
+          id:true,
           status: true,
           claimant_name: true,
           dept_name: true,

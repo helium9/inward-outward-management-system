@@ -26,9 +26,8 @@ import {
 
 function Navbar() {
   return (
-    <div>
       <div
-        className="flex items-center justify-between border-black p-4"
+        className="grid grid-cols-3 justify-between border-black p-4"
         style={{ borderBottom: "2px solid rgba(0, 0, 0, 0.1)" }}
       >
         <div className="flex items-center">
@@ -36,7 +35,7 @@ function Navbar() {
             <Link href="/">Finance Dept.</Link>
           </div>
         </div>
-        <NavigationMenu className="hidden md:flex">
+        <NavigationMenu className="hidden md:flex justify-self-center">
           <NavigationMenuList>
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
@@ -44,18 +43,16 @@ function Navbar() {
                   Dashboard
                 </NavigationMenuLink>
               </Link>
-              <DropdownMenu>
-                <DropdownMenuTrigger>Claims</DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Link href="/claimList">All Claims</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/incomingClaims">New Claims</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Link href="/claimList" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  All Claims
+                </NavigationMenuLink>
+              </Link>
+              <Link href="/incomingClaims" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  New Claims
+                </NavigationMenuLink>
+              </Link>
               <Link href="/history" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   History
@@ -64,7 +61,7 @@ function Navbar() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-        <Button variant="secondary">Sign out</Button>
+        <Button className="w-fit justify-self-end" variant="secondary">Sign out</Button>
         {/* Mobile menu toggle button */}
         <button className="md:hidden">
           <svg
@@ -83,9 +80,6 @@ function Navbar() {
           </svg>
         </button>
       </div>
-      {/* Mobile menu */}
-      <div className="md:hidden"></div>
-    </div>
   );
 }
 

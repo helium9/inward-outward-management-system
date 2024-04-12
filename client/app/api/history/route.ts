@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
   if (searchParams.get("condensed") === "true") {
     const data = await prisma.history.findMany({
       select: {
+        meta_id:true,
         time_stamp: true,
         remarks: true,
         action: true,

@@ -29,7 +29,9 @@
     }>({ name: "Unknown", email: "Unknown", type: "Unknown" });
     const [newClaims, setNewClaims] = useState([]);
     const [history, setHistory] = useState([]);
-    const [currClaims, setCurrClaims] = useState([]);
+    const [claimData, setClaimData] = useState([]);
+    
+    // console.log(claimData);
     // console.log(history[0]);
     useEffect(() => {
       async function getUser(data: any) {
@@ -43,22 +45,22 @@
       }
 
       async function getDB(sessionData: any) {
-        const newClaim = await axios.get("http://localhost:3000/api/claims", {
+        const newClaimData = await axios.get("http://localhost:3000/api/claims", {
           params: {
             ...sessionData,
             condensed: true,
             status: "new",
           },
         });
-        setNewClaims(newClaim.data);
+        setNewClaims(newClaimData.data);
 
-        const history = await axios.get("http://localhost:3000/api/history", {
+        const currHistory = await axios.get("http://localhost:3000/api/history", {
           params: {
             ...sessionData,
             condensed: true,
           },
         });
-        setHistory(history.data);
+        setHistory(currHistory.data);
 
         const currClaims = await axios.get("http://localhost:3000/api/claims", {
           params: {
@@ -67,7 +69,7 @@
             status: "current",
           },
         });
-        setCurrClaims(currClaims.data);
+        setClaimData(currClaims.data);
       }
       if (session && status === "authenticated") {
         getUser(session?.user).then((res) => {
@@ -88,13 +90,13 @@
               condensed={false}
               linkAddress="/claimList"
             >
-              {currClaims.map((data, ind) => (
+              {claimData.map((data, ind) => (
                 <ClaimWrapper
                   key={ind}
                   type={data.status}
                   name={data.claimant_name}
                   info={data.dept_name}
-                  id = {data.id}
+                  meta_id = {data.id}
                   action={{
                     e_name: data.history[0].employee.name,
                     time_stamp: data.history[0].time_stamp,
@@ -145,6 +147,7 @@
                   <ClaimWrapper
                     key={ind}
                     type={item.action}
+                    meta_id={item.meta_id}
                     name={item.meta_data.claimant_name}
                     info={item.meta_data.dept_name}
                     action={{

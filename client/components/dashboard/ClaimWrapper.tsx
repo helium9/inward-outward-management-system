@@ -17,12 +17,13 @@ const ClaimWrapper = ({
   type,
   name,
   info,
-  id,
+  meta_id,
   action = null,
 }: {
   type: string;
   name: string;
   info: string;
+  meta_id:string;
   action: { e_name: string; time_stamp: string; remarks: string } | null;
 }) => {
   //the action attribute in history must match the defined action type
@@ -35,15 +36,15 @@ const ClaimWrapper = ({
   };
   const icon = iconMap[type] || null;
   return (
+    <Link href={`/claimInfo/${meta_id}`}>
     <div className="flex flex-row place-content-between hover:bg-zinc-100 p-2 rounded">
       <div className="flex flex-row items-center">
         {icon}
-        {/* <Link href={`/claimInfo/${id}`}> */}
+        
         <div className="flex flex-col ml-2 font-semibold">
           <p>{name}</p>
           <p className="text-zinc-500">{info}</p>
         </div>
-        {/* </Link> */}
       </div>
       {action !== null && (
         <div className="flex-col text-zinc-500 font-semibold items-end hidden sm:flex">
@@ -55,6 +56,7 @@ const ClaimWrapper = ({
         </div>
       )}
     </div>
+    </Link>
   );
 };
 
