@@ -17,7 +17,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -37,11 +37,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     e.preventDefault();
     try {
       setLoading(true);
-      setFormValues({ username: "", password: "" });
+      setFormValues({ email: "", password: "" });
 
       const res = await signIn("credentials", {
         redirect: false,
-        username: formValues.username,
+        email: formValues.email,
         password: formValues.password,
         callbackUrl,
       });
@@ -74,15 +74,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Input
-              id="username"
-              placeholder="your username"
-              type="text"
+              id="email"
+              placeholder="your email"
+              type="email"
               autoCapitalize="none"
               // autoComplete="email"
               autoCorrect="off"
-              name="username"
+              name="email"
               disabled={isLoading}
-              value={formValues.username}
+              value={formValues.email}
               onChange={handleChange}
             />
             <Input
