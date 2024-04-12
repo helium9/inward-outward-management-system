@@ -103,6 +103,8 @@ const ClaimRow = ({
     console.log(dateTime, meta_id);
     axios.post("http://localhost:3000/api/claimHistory", {mode:"delete", meta_id:meta_id, time_stamp:dateTime}).then((res)=>console.log(res.data));
   }
+  const [activePage, setActivePage] = useState(1);
+  console.log(activePage);
   //adding margin or padding in any table component doesn't work.
   return (
     <TableRow onClick={onClick}>
