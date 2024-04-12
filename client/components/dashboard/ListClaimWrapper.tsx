@@ -35,33 +35,34 @@ import Link from 'next/link';
 
 const ListClaimWrapper = ({
   title,
+  linkAddress,
   condensed = false,
   children,
 }: {
   title: string;
   condensed: boolean;
+  linkAddress:string;
   children: ReactNode[];
 }) => {
   const searchBoxThemeText = !condensed ? `m-0 max-w-96` : "m-0 w-10";
 
   // Extract the URL from the title prop
-  const titleLink = (title as React.ReactElement<any>).props.href;
 
   // Determine the appropriate "View More" link based on the titleLink
-  let viewMoreLink;
-  switch (titleLink) {
-    case '/claimList':
-      viewMoreLink = '/claimList';
-      break;
-    case '/history':
-      viewMoreLink = '/history';
-      break;
-    case '/incomingClaims':
-      viewMoreLink = '/incomingClaims';
-      break;
-    default:
-      viewMoreLink = '#';
-  }
+  // let viewMoreLink;
+  // switch (titleLink) {
+  //   case '/claimList':
+  //     viewMoreLink = '/claimList';
+  //     break;
+  //   case '/history':
+  //     viewMoreLink = '/history';
+  //     break;
+  //   case '/incomingClaims':
+  //     viewMoreLink = '/incomingClaims';
+  //     break;
+  //   default:
+  //     viewMoreLink = '#';
+  // }
 
   return (
     <Card className="rounded-md w-full !px-3 min-w-80">
@@ -128,8 +129,8 @@ const ListClaimWrapper = ({
       </div>
       <CardContent className="flex flex-col"><ScrollArea className="h-48">{children}</ScrollArea></CardContent>
       <CardFooter className="text-zinc-500 text-xs underline">
-      <Link href={viewMoreLink}>
-          <p>View More</p>
+      <Link href={linkAddress}>
+          View More
         </Link>
       </CardFooter>
     </Card>

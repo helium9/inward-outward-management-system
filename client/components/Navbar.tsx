@@ -32,14 +32,14 @@ function Navbar() {
         style={{ borderBottom: "2px solid rgba(0, 0, 0, 0.1)" }}
       >
         <div className="flex items-center">
-          <Link href="/">
-            <span className="text-xl font-bold">Finance Dept.</span>
-          </Link>
+          <div className="text-xl font-bold">
+            <Link href="/">Finance Dept.</Link>
+          </div>
         </div>
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/" passHref>
+              <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Dashboard
                 </NavigationMenuLink>
@@ -47,17 +47,16 @@ function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger>Claims</DropdownMenuTrigger>
                 <DropdownMenuContent>
-                
                   <DropdownMenuSeparator />
-                  <Link href="/claimList" passHref>
-                  <DropdownMenuItem>All Claims</DropdownMenuItem>
-                  </Link>
-                  <Link href="/incomingClaims" passHref>
-                  <DropdownMenuItem>New Claims</DropdownMenuItem>
-                  </Link>
+                  <DropdownMenuItem>
+                    <Link href="/claimList">All Claims</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href="/incomingClaims">New Claims</Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Link href="/history" passHref>
+              <Link href="/history" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   History
                 </NavigationMenuLink>

@@ -1,6 +1,6 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
-import Navbar from "@/components/ui/NavBar";
+import Navbar from "@/components/Navbar";
 import {
   Table,
   TableBody,
@@ -19,7 +19,7 @@ import { AssignmentOutlined } from "@mui/icons-material";
 import { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import Footer from "@/components/ui/Footer";
+import Footer from "@/components/Footer";
 import {
   Select,
   SelectContent,

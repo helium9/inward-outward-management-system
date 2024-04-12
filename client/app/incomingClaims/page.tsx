@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/components/Navbar";
 import {
   Table,
   TableBody,

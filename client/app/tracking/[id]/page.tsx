@@ -6,8 +6,8 @@ import Invoice from "@/components/Invoice";
 
 import RightCard from "@/components/RightCard";
 import LeftCard from "@/components/LeftCard";
-import Navbar from "@/components/ui/Navbar";
-import Footer from "@/components/ui/Footer";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const Page = () => {
   const { id } = useParams();

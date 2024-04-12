@@ -17,8 +17,8 @@
   import { useState } from "react";
   import ListClaimWrapper from "@/components/dashboard/ListClaimWrapper";
   import ClaimWrapper from "@/components/dashboard/ClaimWrapper";
-  import Navbar from "@/components/ui/Navbar";
-  import Footer from "@/components/ui/Footer";
+  import Navbar from "@/components/Navbar";
+  import Footer from "@/components/Footer";
 
   export default function Home() {
     const { data: session, status } = useSession();
@@ -84,8 +84,9 @@
           <div className="text-3xl font-extrabold my-4">Dashboard</div>
           <section className="flex flex-col lg:flex-row gap-4">
             <ListClaimWrapper
-              title={<Link href="/claimList">Current claims</Link>}
+              title="Claim List"
               condensed={false}
+              linkAddress="/claimList"
             >
               {currClaims.map((data, ind) => (
                 <ClaimWrapper
@@ -94,11 +95,11 @@
                   name={data.claimant_name}
                   info={data.dept_name}
                   id = {data.id}
-                  // action={{
-                  //   e_name: data.history[0].employee.name,
-                  //   time_stamp: data.history[0].time_stamp,
-                  //   remarks: data.history[0].remarks,
-                  // }}
+                  action={{
+                    e_name: data.history[0].employee.name,
+                    time_stamp: data.history[0].time_stamp,
+                    remarks: data.history[0].remarks,
+                  }}
                 />
               ))}
             </ListClaimWrapper>
@@ -135,7 +136,8 @@
 
           <section className="flex flex-col lg:flex-row gap-4 mt-12">
             <ListClaimWrapper
-              title={<Link href="/history">Action History</Link>}
+              title='History'
+              linkAddress="/history"
               condensed={false}
             >
               {history &&
@@ -156,7 +158,8 @@
 
             <div>
               <ListClaimWrapper
-                title={<Link href="/incomingClaims">Incoming claims</Link>}
+                title="Incoming Claims"
+                linkAddress="/incomingClaims"
                 condensed={true}
               >
                 {newClaims &&

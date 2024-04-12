@@ -15,6 +15,7 @@ datasource db {
 
 model Meta {
   id            String    @id @default(uuid())
+  origin        String
   inward_number Int
   issue_date    DateTime  @default(now())
   inward_date   DateTime?
@@ -35,6 +36,7 @@ model Employee {
   id       String    @id @default(uuid())
   name     String    @db.VarChar(255)
   email    String    @db.VarChar(255)
+  isAdmin  Boolean
   managing Meta[]
   history  History[]
 }

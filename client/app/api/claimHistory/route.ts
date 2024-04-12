@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../db/db";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -28,12 +27,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
+  console.log(data);
   if (data !== null) {
     if (data.mode === "add") {
-      const upload = await prisma.history.create({ data: data });
+      const {meta_id, employee_id, remarks, action} = data;
+      const upload = await prisma.history.create({ data:{meta_id:meta_id, employee_id:employee_id, action:action, remarks:remarks}});
       const update = await prisma.meta.update({
-        where: { id: data.meta_id },
-        data: { status: data.action, alloted_to_id: data.employee_id },
+        where: { id: meta_id },
+        data: { status: action, alloted_to_id: employee_id },
       });
     } else if (data.mode === "delete") {
       const { time_stamp, meta_id } = data;

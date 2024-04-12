@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE "Meta" (
     "id" TEXT NOT NULL,
+    "origin" TEXT NOT NULL,
     "inward_number" INTEGER NOT NULL,
     "issue_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "inward_date" TIMESTAMP(3),
@@ -22,6 +23,7 @@ CREATE TABLE "Employee" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
+    "isAdmin" BOOLEAN NOT NULL,
 
     CONSTRAINT "Employee_pkey" PRIMARY KEY ("id")
 );
