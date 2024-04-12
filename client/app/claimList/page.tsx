@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
 import {
   Table,
   TableBody,
@@ -408,6 +409,7 @@ const Page: React.FC = () => {
         </Table>
       </div>
     </main>
+    {/* <Footer/> */}
     </div>
   );
 };

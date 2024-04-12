@@ -19,6 +19,7 @@ import { AssignmentOutlined } from "@mui/icons-material";
 import { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import Footer from "@/components/ui/Footer";
 import {
   Select,
   SelectContent,
@@ -456,6 +457,7 @@ function Page({ params }: { params: { id: string } }) {
         </Pagination>
       </section>
     </main>
+    <Footer/>
     </div>
   );
 }
