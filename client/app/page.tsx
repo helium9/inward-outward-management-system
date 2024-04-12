@@ -15,6 +15,8 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import ListClaimWrapper from "@/components/dashboard/ListClaimWrapper";
 import ClaimWrapper from "@/components/dashboard/ClaimWrapper";
+import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -74,6 +76,8 @@ export default function Home() {
   }, [session]);
   
   return (
+    <div>
+      <Navbar/>
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="text-3xl font-extrabold my-4">Dashboard</div>
       <section className="flex flex-col lg:flex-row gap-4">
@@ -84,11 +88,11 @@ export default function Home() {
               type={data.status}
               name={data.claimant_name}
               info={data.dept_name}
-              action={{
-                e_name: data.history[0].employee.name,
-                time_stamp: data.history[0].time_stamp,
-                remarks: data.history[0].remarks,
-              }}
+              // action={{
+              //   e_name: data.history[0].employee.name,
+              //   time_stamp: data.history[0].time_stamp,
+              //   remarks: data.history[0].remarks,
+              // }}
             />
           ))}
         </ListClaimWrapper>
@@ -157,5 +161,7 @@ export default function Home() {
         </div>
       </section>
     </main>
+    <Footer/>
+    </div>
   );
 }
