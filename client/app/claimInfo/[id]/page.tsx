@@ -1,5 +1,6 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
+import Navbar from "@/components/ui/NavBar";
 import {
   Table,
   TableBody,
@@ -217,6 +218,8 @@ function Page({ params }: { params: { id: string } }) {
     axios.post("http://localhost:3000/api/claimHistory", {meta_id:params.id, ...actionTaken}).then((res)=>console.log(res.data));
   }
   return (
+    <div>
+      <Navbar/>
     <main className="p-2 px-4 sm:px-10 xl:px-24">
       <div className="text-2xl font-extrabold my-4">Claim information</div>
       <section className="flex flex-col lg:flex-row gap-4">
@@ -453,6 +456,7 @@ function Page({ params }: { params: { id: string } }) {
         </Pagination>
       </section>
     </main>
+    </div>
   );
 }
 

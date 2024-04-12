@@ -10,12 +10,14 @@ import {
   TaskOutlined,
   ContentPasteGoOutlined,
 } from "@mui/icons-material";
+import Link from "next/link";
 
 
 const ClaimWrapper = ({
   type,
   name,
   info,
+  id,
   action = null,
 }: {
   type: string;
@@ -36,10 +38,12 @@ const ClaimWrapper = ({
     <div className="flex flex-row place-content-between hover:bg-zinc-100 p-2 rounded">
       <div className="flex flex-row items-center">
         {icon}
+        {/* <Link href={`/claimInfo/${id}`}> */}
         <div className="flex flex-col ml-2 font-semibold">
           <p>{name}</p>
           <p className="text-zinc-500">{info}</p>
         </div>
+        {/* </Link> */}
       </div>
       {action !== null && (
         <div className="flex-col text-zinc-500 font-semibold items-end hidden sm:flex">
