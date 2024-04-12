@@ -169,7 +169,7 @@ function Page({ params }: { params: { id: string } }) {
         },
       });
       setClaimData(claimInfo.data);
-      const historyInfo = await axios.get("http://localhost:3000/api/claimHistory", { params: { meta_id: id }});
+      const historyInfo = await axios.get("http://localhost:3000/api/claimHistory", { params: { meta_id: id , activePage : activePage}});
       setHistoryData(historyInfo.data);
       const empList = await axios.get("http://localhost:3000/api/employees");
       setEmployees(empList.data);

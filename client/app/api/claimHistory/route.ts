@@ -6,9 +6,14 @@ import { prisma } from "../../db/db";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   // console.log(searchParams);
+  console.log("hi");
   const meta_id = searchParams.get("meta_id");
+  const activePage = searchParams.get("activePage");
+  console.log("active :",activePage);
   if (meta_id !== null) {
     const histories = await prisma.history.findMany({
+      skip : ((activePage as any) -1)*10,
+      take : 10,
       select: {
         meta_id:true,
         remarks: true,
