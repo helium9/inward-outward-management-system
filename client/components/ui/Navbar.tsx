@@ -39,23 +39,27 @@ function Navbar() {
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/docs" legacyBehavior passHref>
+              <Link href="/" passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Dashboard
                 </NavigationMenuLink>
               </Link>
               <DropdownMenu>
-                <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+                <DropdownMenuTrigger>Claims</DropdownMenuTrigger>
                 <DropdownMenuContent>
                 
                   <DropdownMenuSeparator />
+                  <Link href="/claimList" passHref>
                   <DropdownMenuItem>All Claims</DropdownMenuItem>
+                  </Link>
+                  <Link href="/incomingClaims" passHref>
                   <DropdownMenuItem>New Claims</DropdownMenuItem>
+                  </Link>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Link href="/docs" legacyBehavior passHref>
+              <Link href="/history" passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Actions
+                  History
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>

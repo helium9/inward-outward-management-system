@@ -210,7 +210,8 @@ export default function page() {
        
         <div className="grid w-full items-center gap-1.5 mb-4" style={{width:"653px",marginRight:"6.8rem"}}>
           <Label htmlFor="message-2" className="font-semibold text-base">Subject</Label>
-          <Textarea placeholder="" id="message-2" variant="bordered" className="rounded-sm border-opacity-50"/>
+          <Textarea placeholder="" id="message-2" variant="bordered" className="rounded-sm border-opacity-50" name="subject" value={formData.subject} onChange={handleInputChange}
+            onClear={()=>setFormData({...formData,subject:''})} />
         </div>
 
         <div className="grid w-full items-center gap-1.5 mb-4" style={{width:"200px",marginRight: "35rem"}}>

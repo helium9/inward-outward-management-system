@@ -1,8 +1,10 @@
 'use client';
+import Link from 'next/link';
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
 import {
   Table,
   TableBody,
@@ -70,6 +72,7 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
   lastActionRemarks,
   actionTakenBy,
   actionTimestamp,
+  meta_id,
 }) => {
   const iconMap = {
     forward: <ContentPasteGoOutlined sx={{ fontSize: 36, marginRight: 0.5 }} />,
@@ -93,8 +96,10 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
           <div className="flex flex-row items-center">
             {icon}
             <div className="flex flex-col ml-2 font-semibold">
+            <Link href={`/claimInfo/${meta_id}`}>
               <p>{indName}</p>
               <p className="text-zinc-500">{info}</p>
+              </Link>
             </div>
           </div>
         </div>
@@ -397,12 +402,14 @@ const Page: React.FC = () => {
                   lastActionRemarks={history.remarks}
                   actionTakenBy={history.employee.name}
                   actionTimestamp={history.time_stamp}
+                  meta_id = {history.meta_id}
                 />
               ))}
         </TableBody>
         </Table>
       </div>
     </main>
+    {/* <Footer/> */}
     </div>
   );
 };

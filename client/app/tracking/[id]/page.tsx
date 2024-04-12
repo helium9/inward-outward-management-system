@@ -7,6 +7,7 @@ import Invoice from "@/components/Invoice";
 import RightCard from "@/components/RightCard";
 import LeftCard from "@/components/LeftCard";
 import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
 
 const Page = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const Page = () => {
   return (
     <div>
       <Navbar />
-      <div className="pb-20">
+      <div className="pb-10">
         <div
           style={{
             gridColumn: "1 / 4",
@@ -58,6 +59,7 @@ const Page = () => {
           );
         })}
       </div>
+      <Footer/>
     </div>
   );
 };
