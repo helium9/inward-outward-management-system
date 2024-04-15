@@ -30,6 +30,10 @@ export async function GET(request: NextRequest) {
         meta_data: true,
         employee: true,
       },
+      orderBy: {
+        time_stamp: "desc",
+      },
+      // take: 1,
     });
 
     if (!histories || histories.length === 0) {

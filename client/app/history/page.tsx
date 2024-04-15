@@ -45,7 +45,7 @@ interface ClaimRowProps {
   partyName: string;
   claimantName: string;
   inwardNumber: number;
-  inwardDate : Date;
+  inwardDate: Date;
   issueDate: string;
   amount: number;
   advancedReq: boolean;
@@ -53,8 +53,8 @@ interface ClaimRowProps {
   lastActionRemarks: string;
   actionTakenBy: string;
   actionTimestamp: string;
+  meta_id: string;
 }
-
 
 const ClaimRow: React.FC<ClaimRowProps> = ({
   type,
@@ -86,7 +86,6 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
   const formattedInwardDate = inwardDateObject.toISOString().split('T')[0];
   const paymentTo = partyName !== 'none' ? partyName : claimantName;
 
-
   return (
     <TableRow>
       <TableCell className="font-medium">
@@ -94,10 +93,10 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
           <div className="flex flex-row items-center">
             {icon}
             <Link href={`/tracking/${meta_id}`}>
-            <div className="flex flex-col ml-2 font-semibold">
-              <p>{indName}</p>
-              <p className="text-zinc-500">{info}</p>
-            </div>
+              <div className="flex flex-col ml-2 font-semibold">
+                <p>{indName}</p>
+                <p className="text-zinc-500">{info}</p>
+              </div>
             </Link>
           </div>
         </div>
@@ -129,95 +128,22 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
 };
 
 const filterLabels = {
-  inward_number:"Invoice number",
+  inward_number: "Invoice number",
   issue_date: "Issue Date",
-  ind_name:"Indentor name",
-  dept_name:"Department name",
-  party_name:"Party name",
-  claimant_name:"Claimant name",
-  subject:"Subject",
-  amount:"Amount",
-  status:"Status",
-  alloted_to_name:"Alloted to"
+  ind_name: "Indentor name",
+  dept_name: "Department name",
+  party_name: "Party name",
+  claimant_name: "Claimant name",
+  subject: "Subject",
+  amount: "Amount",
+  status: "Status",
+  alloted_to_name: "Alloted to"
 }
 
 const Page: React.FC = () => {
-  // const [histories, setHistories] = useState([]);
-  // const [sortedHistories, setSortedHistories] = useState([]);
-  // const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  // const [filterField, setFilterField] = useState<string>('Filter');
-  // const [searchTerm, setSearchTerm] = useState('');
-
-  // useEffect(() => {
-  //   fetchHistories();
-  // }, []);
-
-  // const fetchHistories = async () => {
-  //   try {
-  //     const response = await axios.get('/api/history');
-  //     setHistories(response.data);
-  //     // setSortedHistories(response.data);
-  //   } catch (error) {
-  //     console.error('Error fetching histories:', error);
-  //   }
-  // };
-
-  // const sortHistoriesByInwardDate = () => {
-  //   const sorted = [...sortedHistories].sort((a, b) => {
-  //     const dateA = new Date(a.meta_data.inward_date).getTime();
-  //     const dateB = new Date(b.meta_data.inward_date).getTime();
-  //     setFilterField('Inward Date');
-  //     return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-  //   });
-  //   setSortedHistories(sorted);
-  //   // Toggle the sort order for the next click
-  //   setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  // };
-
-  // const sortHistoriesByActionTimestamp = () => {
-  //   const sorted = [...sortedHistories].sort((a, b) => {
-  //     const timestampA = new Date(a.time_stamp).getTime();
-  //     const timestampB = new Date(b.time_stamp).getTime();
-  //     setFilterField('Last Action');
-  //     return sortOrder === 'asc' ? timestampA - timestampB : timestampB - timestampA;
-  //   });
-  //   setSortedHistories(sorted);
-  //   // Toggle the sort order for the next click
-  //   setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  // };
-
-  // const sortHistoriesByInvoiceNumber = () => {
-  //   const sorted = [...sortedHistories].sort((a, b) => {
-  //     const invoiceNumberA = a.meta_data.inward_number;
-  //     const invoiceNumberB = b.meta_data.inward_number;
-  //     setFilterField('Invoice No.');
-  //     return sortOrder === 'asc' ? invoiceNumberA - invoiceNumberB : invoiceNumberB - invoiceNumberA;
-  //   });
-  //   setSortedHistories(sorted);
-  //   // Toggle the sort order for the next click
-  //   setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  // };
-
-  // const filteredHistories = sortedHistories.filter((history) => {
-  //   const inwardNumber = history.meta_data.inward_number.toString();
-  //   const inwardDate = history.meta_data.inward_date;
-  //   const indName = history.meta_data.ind_name.toLowerCase();
-  //   const employeeName = history.employee.name.toLowerCase();
-  //   const deptName = history.meta_data.dept_name.toLowerCase();
-  //   const searchTermLower = searchTerm.toLowerCase();
-
-  //   return (
-  //     inwardNumber.includes(searchTermLower) ||
-  //     inwardDate.includes(searchTermLower) ||
-  //     indName.includes(searchTermLower) ||
-  //     employeeName.includes(searchTermLower) ||
-  //     deptName.includes(searchTermLower)
-  //   );
-  // });
-  
-  const [date, setDate] = React.useState<Date>(); //date from filter options
+  const [date, setDate] = React.useState<Date>(); // date from filter options
   const [filterData, setFilterData] = useState({
-    //state of selected filters
+    // state of selected filters
     inward_number: "",
     issue_date: "",
     ind_name: "",
@@ -238,10 +164,10 @@ const Page: React.FC = () => {
       console.error('Error filtering histories:', error);
     }
   };
-  
+
   const handleFilterClear = () => {
     setFilterData({
-      //state of selected filters
+      // state of selected filters
       inward_number: "",
       issue_date: "",
       ind_name: "",
@@ -254,6 +180,7 @@ const Page: React.FC = () => {
       alloted_to_name: "",
     });
     setDate(undefined);
+    fetchHistories(); // Reset the histories to the initial state
   };
 
   const [histories, setHistories] = useState<ClaimRowProps[]>([]);

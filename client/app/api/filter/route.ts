@@ -1,40 +1,101 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios'; // Assuming you use axios for HTTP requests
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from "../../db/db";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    try {
-      // Extract filter parameters from the request body
-      const { inward_number, issue_date, ind_name, dept_name, party_name, claimant_name, subject, amount, status, alloted_to_name } = req.body;
+interface FilterData {
+  inward_number?: string;
+  issue_date?: string;
+  inward_date?: string;
+  ind_name?: string;
+  dept_name?: string;
+  party_name?: string;
+  claimant_name?: string;
+  subject?: string;
+  amount?: string;
+  status?: string;
+  alloted_to_name?: string;
+  advanced_req?: string;
+}
 
-      // Make a request to your database or API to fetch filtered data
-      const response = await axios.get('/api/history', {
-        params: {
-          inward_number,
-          issue_date,
-          ind_name,
-          dept_name,
-          party_name,
-          claimant_name,
-          subject,
-          amount,
-          status,
-          alloted_to_name
-        }
-      });
+async function filterHistories(filterData: FilterData) {
+  // Construct Prisma query based on the filterData
+  const query = {
+    where: {
+      meta_data: {},
+    },
+    include: {
+      meta_data: true,
+      employee: true,
+    },
+  };
 
-      // Extract the filtered data from the response
-      const filteredData = response.data;
-
-      // Send the filtered data as a response
-      res.status(200).json(filteredData);
-    } catch (error) {
-      console.error('Error filtering data:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  } else {
-    // Return 405 Method Not Allowed if the request method is not POST
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+  // Add filter conditions to the query based on the filterData
+  if (filterData.inward_number) {
+    query.where.meta_data.inward_number = parseInt(filterData.inward_number);
   }
+  if (filterData.issue_date) {
+    query.where.meta_data.issue_date = new Date(filterData.issue_date);
+  }
+  if (filterData.inward_date) {
+    query.where.meta_data.inward_date = new Date(filterData.inward_date);
+  }
+  if (filterData.ind_name) {
+    query.where.meta_data.ind_name = {
+      contains: filterData.ind_name,
+      mode: 'insensitive',
+    };
+  }
+  if (filterData.dept_name) {
+    query.where.meta_data.dept_name = {
+      contains: filterData.dept_name,
+      mode: 'insensitive',
+    };
+  }
+  if (filterData.party_name) {
+    query.where.meta_data.party_name = {
+      contains: filterData.party_name,
+      mode: 'insensitive',
+    };
+  }
+  if (filterData.claimant_name) {
+    query.where.meta_data.claimant_name = {
+      contains: filterData.claimant_name,
+      mode: 'insensitive',
+    };
+  }
+  if (filterData.subject) {
+    query.where.meta_data.subject = {
+      contains: filterData.subject,
+      mode: 'insensitive',
+    };
+  }
+  if (filterData.amount) {
+    query.where.meta_data.amount = parseInt(filterData.amount);
+  }
+  if (filterData.status) {
+    query.where.status = {
+      contains: filterData.status,
+      mode: 'insensitive',
+    };
+  }
+  if (filterData.alloted_to_name) {
+    query.where.employee = {
+      name: {
+        contains: filterData.alloted_to_name,
+        mode: 'insensitive',
+      },
+    };
+  }
+  if (filterData.advanced_req) {
+    query.where.meta_data.advanced_req = filterData.advanced_req === 'true';
+  }
+
+  // Execute the Prisma query to fetch filtered histories
+  const filteredHistories = await prisma.history.findMany(query);
+  return filteredHistories;
+}
+
+export async function POST(req: NextRequest) {
+  const filterData: FilterData = await req.json();
+  const filteredHistories = await filterHistories(filterData);
+  return NextResponse.json(filteredHistories);
 }
