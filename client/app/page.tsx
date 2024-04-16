@@ -58,6 +58,7 @@ const filterLabels = {
 
 export default function Home() {
   const { data: session, status } = useSession();
+  
   const [userInfo, setUserInfo] = useState<{
     name: string | null | undefined;
     email: string | null | undefined;
@@ -70,6 +71,7 @@ export default function Home() {
   // console.log(claimData);
   // console.log(history[0]);
   useEffect(() => {
+    console.log(session);
     async function getUser(data: any) {
       //define type later on
       const res = await axios.get("http://localhost:3000/api/getUser", {
