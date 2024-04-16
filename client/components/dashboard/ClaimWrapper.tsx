@@ -13,6 +13,8 @@ import {
 import Link from "next/link";
 
 
+
+
 const ClaimWrapper = ({
   type,
   name,
@@ -35,6 +37,14 @@ const ClaimWrapper = ({
     stage: <AssignmentOutlined sx={{ fontSize: 40 }} />,
   };
   const icon = iconMap[type] || null;
+
+  const formatTimestamp = (timestamp: string): string => {
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+    return `${formattedDate} at ${formattedTime}`;
+  };
+
   return (
     <Link href={`/claimInfo/${meta_id}`}>
     <div className="flex flex-row place-content-between hover:bg-zinc-100 p-2 rounded">
@@ -50,7 +60,7 @@ const ClaimWrapper = ({
         <div className="flex-col text-zinc-500 font-semibold items-end hidden sm:flex">
           <span className="flex flex-row">
             <p className="text-zinc-900">{action?.e_name}&nbsp;</p>
-            <p> at {action?.time_stamp}</p>
+            <p>{formatTimestamp(action?.time_stamp)}</p>
           </span>
           <p>{action?.remarks}</p>
         </div>

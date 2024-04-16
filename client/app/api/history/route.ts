@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
         employee: { select: { name: true } },
         meta_data: { select: { dept_name: true, claimant_name: true } },
       },
+      orderBy: { time_stamp: 'desc' },
     });
     if (!data || data.length === 0) {
       return NextResponse.json(
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
         meta_data: true,
         employee: true,
       },
+      orderBy: { time_stamp: 'desc' },
     });
 
     if (!histories || histories.length === 0) {

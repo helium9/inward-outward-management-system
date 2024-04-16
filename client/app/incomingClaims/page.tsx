@@ -198,7 +198,7 @@ const Page: React.FC = () => {
     const deptName = ele.dept_name.toLowerCase();
     const partyName = ele.party_name.toLowerCase();
     const claimantName = ele.claimant_name.toLowerCase();
-    const issueData = new Date(ele.issue_date);
+    // const issueData = new Date(ele.issue_date);
     // const advReq = ele.advanced_req.toLowerCase();
     // const amount = ele.amount.toLowerCase();
   

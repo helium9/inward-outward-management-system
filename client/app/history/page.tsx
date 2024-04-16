@@ -240,43 +240,7 @@ const Page: React.FC = () => {
               Show current user
             </label>
           </div>
-        {/* <DropdownMenu> */}
-        {/* //    <DropdownMenuTrigger */}
-        {/* //      className={`flex flex-row items-center sm:min-w-32`} */}
-        {/* //      asChild */}
-        {/* //    > */}
-        {/* //      <Button */}
-        {/* //        variant="outline" */}
-        {/* //        className={`bg-slate-100 p-2 text-zinc-600 h-8 border-zinc-300 m-0 rounded w-fit sm:min-w-32`} */}
-        {/* //      > */}
-        {/* //        <div className="flex-row items-center hidden sm:flex w-full"> */}
-        {/* //          <FilterAltOutlined /> */}
-        {/* //          <p className="pl-1 pr-2 w-full text-left">{filterField}</p> */}
-        {/* //          <ExpandCircleDownOutlined sx={{ fontSize: 16 }} /> */}
-        {/* //        </div> */}
-        {/* //      </Button> */}
-        {/* //    </DropdownMenuTrigger> */}
-        {/* //    <DropdownMenuContent> */}
-        {/* //      <DropdownMenuLabel>Filter</DropdownMenuLabel> */}
-        {/* //      <DropdownMenuSeparator /> */}
-        {/* //      <DropdownMenuItem onClick={sortHistoriesByActionTimestamp}>Last Action</DropdownMenuItem> */}
-        {/* //      <DropdownMenuItem onClick={sortHistoriesByInwardDate}>Inward Date</DropdownMenuItem> */}
-        {/* //      <DropdownMenuItem onClick={sortHistoriesByInvoiceNumber}>Invoice No.</DropdownMenuItem> */}
-        {/* //      <DropdownMenuItem>Employee</DropdownMenuItem> */}
-        {/* //    </DropdownMenuContent> */}
-        {/* //  </DropdownMenu> */}
-          {/* <Input
-            size="sm"
-            variant="bordered"
-            classNames={{
-              base: `m-0`,
-              inputWrapper: "rounded border-zinc-200 border",
-            }}
-            placeholder={`Search`}
-            startContent={<Search sx={{ color: "#999999" }} />}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          /> */}
+       
           <FilterDialog
             date={date}
             setDate={setDate}

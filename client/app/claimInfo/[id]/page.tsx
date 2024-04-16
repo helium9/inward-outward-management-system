@@ -112,6 +112,13 @@ const ClaimRow = ({
   const [activePage, setActivePage] = useState(1);
   console.log(activePage);
   //adding margin or padding in any table component doesn't work.
+  const formatTimestamp = (dateTime: string): string => {
+    const date = new Date(dateTime);
+    const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+    return `${formattedDate} at ${formattedTime}`;
+  };
+
   return (
     <TableRow onClick={onClick}>
       <TableCell className="font-medium">
@@ -138,7 +145,7 @@ const ClaimRow = ({
       </TableCell>
       <TableCell>
         <div className="flex flex-col gap-2">
-          <p>{dateTime}</p>
+          <p>{formatTimestamp(dateTime)}</p>
           {expanded && (
             <button
               onClick={() => handleRevert(dateTime, meta_id)}

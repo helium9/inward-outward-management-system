@@ -122,7 +122,7 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
           {actionTakenBy}
           <br></br>
           <div className="flex flex-row">
-            <p className="text-zinc-500">at</p>&nbsp;
+            <p className="text-zinc-500">on</p>&nbsp;
             {new Date(actionTimestamp).toLocaleString()}
           </div>
         </div>
@@ -145,78 +145,6 @@ const filterLabels = {
 }
 
 const Page: React.FC = () => {
-  // const [histories, setHistories] = useState([]);
-  // const [sortedHistories, setSortedHistories] = useState([]);
-  // const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  // const [filterField, setFilterField] = useState<string>('Filter');
-  // const [searchTerm, setSearchTerm] = useState('');
-
-  // useEffect(() => {
-  //   fetchHistories();
-  // }, []);
-
-  // const fetchHistories = async () => {
-  //   try {
-  //     const response = await axios.get('/api/history');
-  //     setHistories(response.data);
-  //     // setSortedHistories(response.data);
-  //   } catch (error) {
-  //     console.error('Error fetching histories:', error);
-  //   }
-  // };
-
-  // const sortHistoriesByInwardDate = () => {
-  //   const sorted = [...sortedHistories].sort((a, b) => {
-  //     const dateA = new Date(a.meta_data.inward_date).getTime();
-  //     const dateB = new Date(b.meta_data.inward_date).getTime();
-  //     setFilterField('Inward Date');
-  //     return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-  //   });
-  //   setSortedHistories(sorted);
-  //   // Toggle the sort order for the next click
-  //   setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  // };
-
-  // const sortHistoriesByActionTimestamp = () => {
-  //   const sorted = [...sortedHistories].sort((a, b) => {
-  //     const timestampA = new Date(a.time_stamp).getTime();
-  //     const timestampB = new Date(b.time_stamp).getTime();
-  //     setFilterField('Last Action');
-  //     return sortOrder === 'asc' ? timestampA - timestampB : timestampB - timestampA;
-  //   });
-  //   setSortedHistories(sorted);
-  //   // Toggle the sort order for the next click
-  //   setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  // };
-
-  // const sortHistoriesByInvoiceNumber = () => {
-  //   const sorted = [...sortedHistories].sort((a, b) => {
-  //     const invoiceNumberA = a.meta_data.inward_number;
-  //     const invoiceNumberB = b.meta_data.inward_number;
-  //     setFilterField('Invoice No.');
-  //     return sortOrder === 'asc' ? invoiceNumberA - invoiceNumberB : invoiceNumberB - invoiceNumberA;
-  //   });
-  //   setSortedHistories(sorted);
-  //   // Toggle the sort order for the next click
-  //   setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  // };
-
-  // const filteredHistories = sortedHistories.filter((history) => {
-  //   const inwardNumber = history.meta_data.inward_number.toString();
-  //   const inwardDate = history.meta_data.inward_date;
-  //   const indName = history.meta_data.ind_name.toLowerCase();
-  //   const employeeName = history.employee.name.toLowerCase();
-  //   const deptName = history.meta_data.dept_name.toLowerCase();
-  //   const searchTermLower = searchTerm.toLowerCase();
-
-  //   return (
-  //     inwardNumber.includes(searchTermLower) ||
-  //     inwardDate.includes(searchTermLower) ||
-  //     indName.includes(searchTermLower) ||
-  //     employeeName.includes(searchTermLower) ||
-  //     deptName.includes(searchTermLower)
-  //   );
-  // });
   
   const [date, setDate] = React.useState<Date>(); //date from filter options
   const [filterData, setFilterData] = useState({
@@ -233,10 +161,48 @@ const Page: React.FC = () => {
     alloted_to_name: "",
   });
 
-  const handleFilterApply = () => {
-    console.log(filterData, date);
-    //write backend post request for fetching database here.
+  const [histories, setHistories] = useState<ClaimRowProps[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  useEffect(() => {
+    fetchHistories();
+  }, []);
+
+  const fetchHistories = async () => {
+    try {
+      const response = await axios.get('/api/claimList');
+      setHistories(response.data);
+    } catch (error) {
+      console.error('Error fetching histories:', error);
+    }
   };
+
+  const handleSearch = async (term: string) => {
+    try {
+      const response = await axios.get(`/api/searchClaims?searchTerm=${term}`);
+      setHistories(response.data);
+    } catch (error) {
+      console.error('Error searching claims:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (searchTerm.trim() !== '') {
+      handleSearch(searchTerm);
+    } else {
+      fetchHistories();
+    }
+  }, [searchTerm]);
+
+  const handleFilterApply = async () => {
+    try {
+      const response = await axios.post('/api/claimListFilter', filterData);
+      setHistories(response.data);
+    } catch (error) {
+      console.error('Error filtering histories:', error);
+    }
+  };
+
   const handleFilterClear = () => {
     setFilterData({
       //state of selected filters
@@ -252,22 +218,7 @@ const Page: React.FC = () => {
       alloted_to_name: "",
     });
     setDate(undefined);
-  };
-
-  const [histories, setHistories] = useState<ClaimRowProps[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-
-  useEffect(() => {
     fetchHistories();
-  }, []);
-
-  const fetchHistories = async () => {
-    try {
-      const response = await axios.get('/api/claimList');
-      setHistories(response.data);
-    } catch (error) {
-      console.error('Error fetching histories:', error);
-    }
   };
 
   const filteredHistories = histories.filter((history) => {
@@ -311,43 +262,7 @@ const Page: React.FC = () => {
               Show current user
             </label>
           </div>
-        {/* <DropdownMenu> */}
-        {/* //    <DropdownMenuTrigger */}
-        {/* //      className={`flex flex-row items-center sm:min-w-32`} */}
-        {/* //      asChild */}
-        {/* //    > */}
-        {/* //      <Button */}
-        {/* //        variant="outline" */}
-        {/* //        className={`bg-slate-100 p-2 text-zinc-600 h-8 border-zinc-300 m-0 rounded w-fit sm:min-w-32`} */}
-        {/* //      > */}
-        {/* //        <div className="flex-row items-center hidden sm:flex w-full"> */}
-        {/* //          <FilterAltOutlined /> */}
-        {/* //          <p className="pl-1 pr-2 w-full text-left">{filterField}</p> */}
-        {/* //          <ExpandCircleDownOutlined sx={{ fontSize: 16 }} /> */}
-        {/* //        </div> */}
-        {/* //      </Button> */}
-        {/* //    </DropdownMenuTrigger> */}
-        {/* //    <DropdownMenuContent> */}
-        {/* //      <DropdownMenuLabel>Filter</DropdownMenuLabel> */}
-        {/* //      <DropdownMenuSeparator /> */}
-        {/* //      <DropdownMenuItem onClick={sortHistoriesByActionTimestamp}>Last Action</DropdownMenuItem> */}
-        {/* //      <DropdownMenuItem onClick={sortHistoriesByInwardDate}>Inward Date</DropdownMenuItem> */}
-        {/* //      <DropdownMenuItem onClick={sortHistoriesByInvoiceNumber}>Invoice No.</DropdownMenuItem> */}
-        {/* //      <DropdownMenuItem>Employee</DropdownMenuItem> */}
-        {/* //    </DropdownMenuContent> */}
-        {/* //  </DropdownMenu> */}
-          {/* <Input
-            size="sm"
-            variant="bordered"
-            classNames={{
-              base: `m-0`,
-              inputWrapper: "rounded border-zinc-200 border",
-            }}
-            placeholder={`Search`}
-            startContent={<Search sx={{ color: "#999999" }} />}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          /> */}
+       
           <FilterDialog
             date={date}
             setDate={setDate}
