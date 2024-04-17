@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
 import {
   Table,
@@ -21,6 +22,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import FilterDialog from "@/components/FilterDialog";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -41,6 +51,7 @@ import {
   TaskOutlined,
   ContentPasteGoOutlined,
   ArrowOutward,
+  AddCircleOutlineOutlined,
 } from "@mui/icons-material";
 
 const filterLabels = {
@@ -119,11 +130,14 @@ export default function Home() {
     }
     if (session && status === "authenticated") {
       getUser(session?.user).then((res) => {
-        if(res.type==="Claimant"){
+        if (res.type === "Claimant") {
           // console.log(session);
-          setUserInfo({name:session.user?.name, email:session.user?.email, type:"Claimant"});
-        }
-        else setUserInfo(res);
+          setUserInfo({
+            name: session.user?.name,
+            email: session.user?.email,
+            type: "Claimant",
+          });
+        } else setUserInfo(res);
         getDB(session?.user);
       });
     }
@@ -162,6 +176,19 @@ export default function Home() {
       alloted_to_name: "",
     });
     setDate(undefined);
+  };
+  const [newEmployeeDetails, setNewEmployeeDetails] = useState({
+    name: "",
+    email: "",
+  });
+  const handleNewEmployeeAdd = (add: Number) => {
+    console.log(newEmployeeDetails);
+    axios
+      .post("http://localhost:3000/api/newEmployee", {
+        mode: add ? "add" : "del",
+        ...newEmployeeDetails,
+      })
+      .then((res) => console.log(res));
   };
   // console.log(users);
   return (
@@ -244,31 +271,34 @@ export default function Home() {
               ))}
           </ListClaimWrapper>
 
-          {userInfo.type!=="Claimant" && (<div>
-            <ListClaimWrapper
-              title="Incoming Claims"
-              linkAddress="/incomingClaims"
-              condensed={true}
-            >
-              {newClaims &&
-                newClaims.map((claim, ind) => (
-                  <ClaimWrapper
-                    key={ind}
-                    type={"new"}
-                    name={claim.claimant_name as string}
-                    info={claim.dept_name as string}
-                    action={null}
-                    meta_id={claim.meta_id}
-                  />
-                ))}
-            </ListClaimWrapper>
-          </div>)}
+          {userInfo.type !== "Claimant" && (
+            <div>
+              <ListClaimWrapper
+                title="Incoming Claims"
+                linkAddress="/incomingClaims"
+                condensed={true}
+              >
+                {newClaims &&
+                  newClaims.map((claim, ind) => (
+                    <ClaimWrapper
+                      key={ind}
+                      type={"new"}
+                      name={claim.claimant_name as string}
+                      info={claim.dept_name as string}
+                      action={null}
+                      meta_id={claim.meta_id}
+                    />
+                  ))}
+              </ListClaimWrapper>
+            </div>
+          )}
         </section>
-        <section className="mt-14">
-          <div className="my-4 flex flex-row items-center">
-            <p className="text-2xl font-bold">Registered Employees</p>
-            <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
-              <div className="flex items-center min-w-40 space-x-2">
+        {userInfo.type === "Admin" && (
+          <section className="mt-14">
+            <div className="my-4 flex flex-row items-center">
+              <p className="text-2xl font-bold">Registered Employees</p>
+              <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
+                {/* <div className="flex items-center min-w-40 space-x-2">
                 <Checkbox id="terms" />
                 <label
                   htmlFor="terms"
@@ -276,8 +306,8 @@ export default function Home() {
                 >
                   Show current user
                 </label>
-              </div>
-              <FilterDialog
+              </div> */}
+                {/* <FilterDialog
                 date={date}
                 setDate={setDate}
                 filterData={filterData}
@@ -285,56 +315,130 @@ export default function Home() {
                 handleFilterApply={handleFilterApply}
                 handleFilterClear={handleFilterClear}
                 labels={filterLabels}
-              />
-              <Input
-                size="sm"
-                variant="bordered"
-                classNames={{
-                  base: `m-0`,
-                  inputWrapper: "rounded border-zinc-200 border",
-                }}
-                placeholder={`Search`}
-                startContent={<Search sx={{ color: "#999999" }} />}
-              />
+              /> */}
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="border bg-zinc-100 h-8 text-zinc-600 border-zinc-300 hover:bg-zinc-200"
+                      variant={"secondary"}
+                    >
+                      Add &nbsp;
+                      <AddCircleOutlineOutlined sx={{ fontSize: 16 }} />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add employee?</DialogTitle>
+                      <DialogDescription>
+                        <div className="flex flex-col gap-3">
+                          <p>
+                            Note this action will provide employee level access
+                            to the site including sensitive information.
+                          </p>
+                          <Input
+                            value={newEmployeeDetails.name}
+                            onValueChange={(val) =>
+                              setNewEmployeeDetails({
+                                ...newEmployeeDetails,
+                                name: val,
+                              })
+                            }
+                            placeholder="*"
+                            label="Employee institute email"
+                            labelPlacement="outside"
+                            variant="bordered"
+                            classNames={{
+                              mainWrapper: "",
+                              inputWrapper: "rounded-md border-1 shadow-sm",
+                              label: "font-medium",
+                            }}
+                            isClearable
+                          />
+                          <Input
+                            value={newEmployeeDetails.email}
+                            onValueChange={(val) =>
+                              setNewEmployeeDetails({
+                                ...newEmployeeDetails,
+                                email: val,
+                              })
+                            }
+                            placeholder="*@gmail.com"
+                            label="Employee institute email"
+                            labelPlacement="outside"
+                            variant="bordered"
+                            classNames={{
+                              mainWrapper: "",
+                              inputWrapper: "rounded-md border-1 shadow-sm",
+                              label: "font-medium",
+                            }}
+                            isClearable
+                          />
+                        </div>
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button
+                        type="submit"
+                        onClick={() => handleNewEmployeeAdd(1)}
+                      >
+                        Save changes
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+                <Input
+                  size="sm"
+                  variant="bordered"
+                  classNames={{
+                    base: `m-0`,
+                    inputWrapper: "rounded border-zinc-200 border",
+                  }}
+                  placeholder={`Search`}
+                  startContent={<Search sx={{ color: "#999999" }} />}
+                />
+              </div>
             </div>
-          </div>
-          <div className="rounded-md border border-zinc-300">
-            <Table>
-              <TableHeader>
-                <TableRow className="text-zinc-500 font-semibold">
-                  <TableHead className="w-1/2 lg:w-1/3">
-                    <p className="ml-6">Name</p>
-                  </TableHead>
-                  <TableHead className="w-36">Email</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users && Array.isArray(users) &&
-                  users.map((item, ind) => {
-                    return (
-                      <TableRow key={ind}>
-                        <TableCell className="font-medium">
-                          <div className="ml-6 my-2">
-                            <div className="flex flex-row items-center">
-                              <Person sx={{ fontSize: 40 }} />
-                              <div className="flex flex-col ml-2 font-semibold">
-                                {item?.name}
+            <div className="rounded-md border border-zinc-300">
+              <Table>
+                <TableHeader>
+                  <TableRow className="text-zinc-500 font-semibold">
+                    <TableHead className="w-1/2 lg:w-1/3">
+                      <p className="ml-6">Name</p>
+                    </TableHead>
+                    <TableHead className="w-36 lg:w-64">Email</TableHead>
+                    {/* <TableHead></TableHead> */}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users &&
+                    Array.isArray(users) &&
+                    users.map((item, ind) => {
+                      return (
+                        <TableRow key={ind}>
+                          <TableCell className="font-medium">
+                            <div className="ml-6 my-2">
+                              <div className="flex flex-row items-center">
+                                <Person sx={{ fontSize: 40 }} />
+                                <div className="flex flex-col ml-2 font-semibold">
+                                  {item?.name}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col gap-2">
-                            {item?.email}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </div>
-        </section>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-row gap-6">
+                              {item?.email}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </div>
+          </section>
+        )}
       </main>
       <Footer />
     </div>
