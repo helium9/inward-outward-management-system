@@ -48,7 +48,7 @@ function Navbar() {
             </Link>
             <Link href="/incomingClaims" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                New Claims
+                Incoming Claims
               </NavigationMenuLink>
             </Link>
             <Link href="/history" legacyBehavior passHref>
