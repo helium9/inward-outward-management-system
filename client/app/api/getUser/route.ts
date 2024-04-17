@@ -9,13 +9,14 @@ export async function GET(request: NextRequest) {
   const present = await prisma.employee.count({
     where: { email: session.user.email },
   });
+
   if (present != 0) {
     const { isAdmin } = await prisma.employee.findFirst({
       select: { isAdmin: true },
       where: { email: session.user.email },
     });
     const searchParams = request.nextUrl.searchParams;
-    console.log("user", searchParams);
+    // console.log("user", searchParams);
     const mode = searchParams.get("mode");
     // console.log(request.nextUrl);
     // console.log(searchParams.get("email"));
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
           email: searchParams.get("email") as string,
         },
       });
-      console.log("emp", data);
+      // console.log("emp", data);
       if (data !== null) {
         const { name, email, isAdmin } = data;
         const res = { type: isAdmin ? "Admin" : "F/A Employee", name, email };
