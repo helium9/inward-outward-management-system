@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+#  INWARD AND OUTWARD MANAGEMENT SYSTEM
 
-First, run the development server:
+
+A brief description of what this project does and who it's for
+
+##  Introduction:-
+The Inward and Outward Management System is a comprehensive software solution designed to optimize and centralize the inward and outward processes within the Finance and Accounting Department of IIT INDORE. This system caters to three primary user domains: Administration of the Dept., Finance & Accounting (FA) Employees, and Claimants.
+
+## Purpose:-
+
+The prime objective of the Inward and Outward Management System is to streamline and enhance communication for claimants regarding the status of their Finance Reimbursement claims submitted to the Finance Department. This system aims to professionalize the process, providing claimants with efficient and transparent updates on the progress of their claims.
+
+## Scope:-
+
+- The product is explicitly confined to the Software Domain, serving as a web application for customized usage within the Finance and Accounting Department.
+- Once a Claimant submits a Reimbursement Claim, the claim circulates among F/A employees in order of their designation hierarchy.
+- The Web application extends the ability to maintain the database of the claims and update its status.
+
+## References:-
+
+The product is being developed for the customized usage of the Finance and Accounting (F/A) Department of IIT INDORE. The details specified in the description field solely refer to the requirements of the F/A department.
+
+## General Description:-
+
+The inward and outward management system serves as a dynamic and efficient tool to enhance the workflow within the Finance and Accounting department, promoting transparency and accountability in the processing of reimbursement claims.
+
+## Technical Stack:-
+
+- Frontend: Next.js, TypeScript
+- Backend: Prisma, PostgreSQL
+- UI Framework: [UI Shedcn]
+
+
+
+
+
+
+## Installation
+
+Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+  git clone https://github.com/helium9/inward-outward-management-system.git
+  cd client
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Install the dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm i
+```
+Create the database
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+To run this project, you will need to add the following environment variables to your .env file
 
-## Deploy on Vercel
+ `DATABASE_URL` 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+ To run this project, you will need to add the following environment variables to your .env.local file
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+`NEXTAUTH_SECRET`
+`GOOGLE_SECRET` 
+`GOOGLE_ID` 
+`password` 
+
+## Run the application:
+```bash
+npm run dev
+```
+
+
+
+
+
+
+## Usage
+
+
+- Access the application through your web browser at the provided URL.
+- Different user roles will have different access levels and functionalities based on their designation hierarchy.
+- Claimants can submit reimbursement claims and track their status.
+- Finance officers can review and update claim statuses.
+- Notifications will be sent to claimants upon status updates.
