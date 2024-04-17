@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../db/db";
+import { getServerSession } from "next-auth";
 
 interface FilterData {
   inward_number?: string;
@@ -17,16 +18,19 @@ interface FilterData {
 }
 
 async function filterHistories(filterData: FilterData) {
-
+  const session = await getServerSession();
+  const _count = await prisma.employee.count({
+    where: { email: session?.user.email },
+  });
   const query = {
     where: {
-      meta_data: {},
+      meta_data: _count === 0 ? { origin: session?.user.email } : {},
     },
     include: {
       meta_data: true,
       employee: true,
     },
-    orderBy: { time_stamp: 'desc' },
+    orderBy: { time_stamp: "desc" },
   };
 
   if (filterData.inward_number) {
@@ -41,31 +45,31 @@ async function filterHistories(filterData: FilterData) {
   if (filterData.ind_name) {
     query.where.meta_data.ind_name = {
       contains: filterData.ind_name,
-      mode: 'insensitive',
+      mode: "insensitive",
     };
   }
   if (filterData.dept_name) {
     query.where.meta_data.dept_name = {
       contains: filterData.dept_name,
-      mode: 'insensitive',
+      mode: "insensitive",
     };
   }
   if (filterData.party_name) {
     query.where.meta_data.party_name = {
       contains: filterData.party_name,
-      mode: 'insensitive',
+      mode: "insensitive",
     };
   }
   if (filterData.claimant_name) {
     query.where.meta_data.claimant_name = {
       contains: filterData.claimant_name,
-      mode: 'insensitive',
+      mode: "insensitive",
     };
   }
   if (filterData.subject) {
     query.where.meta_data.subject = {
       contains: filterData.subject,
-      mode: 'insensitive',
+      mode: "insensitive",
     };
   }
   if (filterData.amount) {
@@ -74,25 +78,25 @@ async function filterHistories(filterData: FilterData) {
   if (filterData.status) {
     query.where.status = {
       contains: filterData.status,
-      mode: 'insensitive',
+      mode: "insensitive",
     };
   }
   if (filterData.alloted_to_name) {
     query.where.employee = {
       name: {
         contains: filterData.alloted_to_name,
-        mode: 'insensitive',
+        mode: "insensitive",
       },
     };
   }
   if (filterData.advanced_req) {
-    query.where.meta_data.advanced_req = filterData.advanced_req === 'true';
+    query.where.meta_data.advanced_req = filterData.advanced_req === "true";
   }
-  
+
   const filteredHistories = await prisma.history.findMany({
     ...query,
-    distinct : ['meta_id'],
-    orderBy : {time_stamp : 'desc'},
+    distinct: ["meta_id"],
+    orderBy: { time_stamp: "desc" },
   });
   return filteredHistories;
 }

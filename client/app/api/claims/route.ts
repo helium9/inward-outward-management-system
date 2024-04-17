@@ -5,7 +5,7 @@ import { prisma } from "../../db/db";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  console.log(searchParams);
+  // console.log(searchParams);
   // const {email} = searchParams;
   const _count = await prisma.employee.count({
     where: { email: searchParams.get("email") as string },

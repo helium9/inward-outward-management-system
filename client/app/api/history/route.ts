@@ -2,10 +2,15 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { prisma } from "../../db/db";
+import { getServerSession } from "next-auth";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const activePage = searchParams.get("activePage");
+  const session = await getServerSession();
+  const _count = await prisma.employee.count({
+    where: { email: session?.user.email },
+  });
   //   console.log(searchParams);
   if (searchParams.get("condensed") === "true") {
     const data = await prisma.history.findMany({
@@ -35,6 +40,7 @@ export async function GET(request: NextRequest) {
         employee: true,
       },
       orderBy: { time_stamp: 'desc' },
+      where:{meta_data: _count === 0 ? { origin: session?.user.email } : {}}
     });
 
     if (!histories || histories.length === 0) {

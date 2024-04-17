@@ -1,5 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-
+/* 
+.bg-custom-background{
+    background-image: url('https://products.ls.graphics/mesh-gradients/images/60.-Zircon.jpg');
+} */

@@ -210,11 +210,11 @@ export default function Home() {
                 name={data.claimant_name}
                 info={data.dept_name}
                 meta_id={data.id}
-                // action={{
-                //   e_name: data.history[0].employee.name,
-                //   time_stamp: data.history[0].time_stamp,
-                //   remarks: data.history[0].remarks,
-                // }}
+                action={{
+                  e_name: data.history[0].employee.name,
+                  time_stamp: data.history[0].time_stamp,
+                  remarks: data.history[0].remarks,
+                }}
               />
             ))}
           </ListClaimWrapper>
@@ -346,7 +346,7 @@ export default function Home() {
                               })
                             }
                             placeholder="*"
-                            label="Employee institute email"
+                            label="Employee name"
                             labelPlacement="outside"
                             variant="bordered"
                             classNames={{
