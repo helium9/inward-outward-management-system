@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
       },
     });
     if (data !== null) {
-      const { name, email } = data;
-      const res = { type: "F/A Employee", name, email };
+      const { name, email, isAdmin } = data;
+      const res = { type: (isAdmin)?"Admin":"F/A Employee", name, email };
       return NextResponse.json(res, { status: 200 });
     } else return NextResponse.json({ type: "Claimant" }, { status: 200 });
   }

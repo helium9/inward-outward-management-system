@@ -5,21 +5,31 @@ import { prisma } from "../../db/db";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
+  console.log(searchParams);
+  // const {email} = searchParams;
+  const _count = await prisma.employee.count({
+    where: { email: searchParams.get("email") as string },
+  });
+  // console.log(_count);
   if (searchParams.get("condensed") === "true") {
-    if (searchParams.get("status") === "new") {
+    if (searchParams.get("status") === "new" && _count != 0) {
       const data = await prisma.meta.findMany({
         where: { status: "new" },
         orderBy: { issue_date: "desc" },
-        select: { id:true, claimant_name: true, dept_name: true },
+        select: { id: true, claimant_name: true, dept_name: true },
       });
       return NextResponse.json(data, { status: 200 });
     } else if (searchParams.get("status") === "current") {
       const data = await prisma.meta.findMany({
-        where: {
-          NOT: [{ status: "new" }, { status: "outward" }],
-        },
+        where:
+          _count === 0
+            ? {
+                NOT: [{ status: "new" }, { status: "outward" }],
+                origin: searchParams.get("email") as string,
+              }
+            : { NOT: [{ status: "new" }, { status: "outward" }] },
         select: {
-          id:true,
+          id: true,
           status: true,
           claimant_name: true,
           dept_name: true,
@@ -54,9 +64,9 @@ export async function GET(request: NextRequest) {
         include: { managed_by_id: { select: { name: true } } },
         where: { id: searchParams.get("id") as string },
       });
-      if(metaData?.alloted_to_id) delete metaData.alloted_to_id;
+      if (metaData?.alloted_to_id) delete metaData.alloted_to_id;
       return NextResponse.json(metaData, { status: 200 });
     }
-    return NextResponse.json([], { status: 200 });
   }
+  return NextResponse.json([], { status: 200 });
 }

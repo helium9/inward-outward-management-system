@@ -78,6 +78,7 @@ export default function Home() {
           mode: "curr",
         },
       });
+      // console.log(res.data);
       return res.data;
     }
 
@@ -118,7 +119,11 @@ export default function Home() {
     }
     if (session && status === "authenticated") {
       getUser(session?.user).then((res) => {
-        setUserInfo(res);
+        if(res.type==="Claimant"){
+          // console.log(session);
+          setUserInfo({name:session.user?.name, email:session.user?.email, type:"Claimant"});
+        }
+        else setUserInfo(res);
         getDB(session?.user);
       });
     }
@@ -239,7 +244,7 @@ export default function Home() {
               ))}
           </ListClaimWrapper>
 
-          <div>
+          {userInfo.type!=="Claimant" && (<div>
             <ListClaimWrapper
               title="Incoming Claims"
               linkAddress="/incomingClaims"
@@ -257,7 +262,7 @@ export default function Home() {
                   />
                 ))}
             </ListClaimWrapper>
-          </div>
+          </div>)}
         </section>
         <section className="mt-14">
           <div className="my-4 flex flex-row items-center">
