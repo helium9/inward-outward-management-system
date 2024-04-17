@@ -130,8 +130,9 @@ export default function Home() {
     }
     if (session && status === "authenticated") {
       getUser(session?.user).then((res) => {
-        if (res.type === "Claimant") {
-          // console.log(session);
+        console.log(res);
+        if (res.length===0) {
+          console.log(session);
           setUserInfo({
             name: session.user?.name,
             email: session.user?.email,
