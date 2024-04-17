@@ -56,6 +56,11 @@ function Navbar() {
                 History
               </NavigationMenuLink>
             </Link>
+            <Link href="/newClaim" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                New Claim
+              </NavigationMenuLink>
+            </Link>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
