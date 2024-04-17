@@ -311,7 +311,7 @@ function Page({ params }: { params: { id: string } }) {
                             <p>Issue date</p>
                             <p>
                               {" "}
-                              &nbsp; {claimData.issue_date.substring(0, 10)}
+                              {/* &nbsp; {claimData.issue_date.substring(0, 10)} */}
                             </p>
                           </span>
                         </div>

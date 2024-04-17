@@ -5,6 +5,7 @@ import { prisma } from "../../db/db";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
+  const activePage = searchParams.get("activePage");
   //   console.log(searchParams);
   if (searchParams.get("condensed") === "true") {
     const data = await prisma.history.findMany({
@@ -27,6 +28,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data, { status: 200 });
   } else {
     const histories = await prisma.history.findMany({
+      skip : ((activePage as any) -1)*3,
+      take : 3,
       include: {
         meta_data: true,
         employee: true,
