@@ -36,7 +36,16 @@ import {
   TaskOutlined,
   ContentPasteGoOutlined,
 } from "@mui/icons-material";
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {  LastPage, FirstPage } from "@mui/icons-material";
 import FilterDialog from "@/components/FilterDialog";
 
 interface ClaimRowProps {
@@ -177,14 +186,15 @@ const Page: React.FC = () => {
 
   const [data, setData] = useState<ClaimRowProps[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [activePage, setActivePage] = useState(1);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [activePage]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('/api/incomingClaims');
+      const response = await axios.get('/api/incomingClaims', { params: { activePage: activePage }});
       setData(response.data);
     } catch (error) {
       console.error('Error fetching histories:', error);
@@ -278,6 +288,72 @@ const Page: React.FC = () => {
         </TableBody>
         </Table>
       </div>
+      <section className="my-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={() => {
+                    if (activePage > 1) {
+                      setActivePage(activePage - 1);
+                    }
+                  }}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#" onClick={() => setActivePage(1)}>
+                  <FirstPage />
+                </PaginationLink>
+              </PaginationItem>
+              {activePage >= 1 && (
+                <PaginationItem>
+                  <PaginationLink isActive href="#">
+                    {activePage}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+
+              {activePage + 1 >= 1 && (
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    onClick={() => setActivePage(activePage + 1)}
+                  >
+                    {activePage + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              {activePage + 2 >= 1 && (
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    onClick={() => setActivePage(activePage + 2)}
+                  >
+                    {activePage + 2}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={() => setActivePage(activePage)}
+                >
+                  <LastPage />
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={() => setActivePage(activePage + 1)}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </section>
     </main>
     </div>
   );

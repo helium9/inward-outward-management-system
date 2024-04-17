@@ -35,6 +35,17 @@ import {
   TaskOutlined,
   ContentPasteGoOutlined,
 } from "@mui/icons-material";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {  LastPage, FirstPage } from "@mui/icons-material";
+
 
 import FilterDialog from "@/components/FilterDialog";
 
@@ -140,6 +151,7 @@ const filterLabels = {
   alloted_to_name: "Alloted to"
 }
 
+
 const Page: React.FC = () => {
   const [date, setDate] = React.useState<Date>(); // date from filter options
   const [filterData, setFilterData] = useState({
@@ -180,24 +192,39 @@ const Page: React.FC = () => {
       alloted_to_name: "",
     });
     setDate(undefined);
-    fetchHistories(); // Reset the histories to the initial state
+    // getPagination(); // Reset the histories to the initial state
   };
 
   const [histories, setHistories] = useState<ClaimRowProps[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [activePage, setActivePage] = useState(1);
 
-  useEffect(() => {
-    fetchHistories();
-  }, []);
+  // useEffect(() => {
+  //   fetchHistories();
+  // }, []);
 
-  const fetchHistories = async () => {
+  const getPagination = async () => {
+
     try {
-      const response = await axios.get('/api/history');
+      const response = await axios.get('http://localhost:3000/api/history', { params: {  activePage: activePage } });
       setHistories(response.data);
     } catch (error) {
       console.error('Error fetching histories:', error);
     }
   };
+
+  useEffect(() => {
+    getPagination();
+  }, [activePage]); 
+
+  // const fetchHistories = async () => {
+  //   try {
+  //     const response = await axios.get('/api/history');
+  //     setHistories(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching histories:', error);
+  //   }
+  // };
 
   const filteredHistories = histories.filter((history) => {
     const searchTermLower = searchTerm.toLowerCase();
@@ -302,6 +329,72 @@ const Page: React.FC = () => {
         </TableBody>
         </Table>
       </div>
+      <section className="my-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={() => {
+                    if (activePage > 1) {
+                      setActivePage(activePage - 1);
+                    }
+                  }}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#" onClick={() => setActivePage(1)}>
+                  <FirstPage />
+                </PaginationLink>
+              </PaginationItem>
+              {activePage >= 1 && (
+                <PaginationItem>
+                  <PaginationLink isActive href="#">
+                    {activePage}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+
+              {activePage + 1 >= 1 && (
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    onClick={() => setActivePage(activePage + 1)}
+                  >
+                    {activePage + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              {activePage + 2 >= 1 && (
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    onClick={() => setActivePage(activePage + 2)}
+                  >
+                    {activePage + 2}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={() => setActivePage(activePage)}
+                >
+                  <LastPage />
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={() => setActivePage(activePage + 1)}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </section>
     </main>
     </div>
   );

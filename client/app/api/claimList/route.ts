@@ -6,25 +6,28 @@ import { prisma } from "../../db/db";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   //   console.log(searchParams);
-  if (searchParams.get("condensed") === "true") {
-    const data = await prisma.history.findMany({
-      select: {
-        time_stamp: true,
-        remarks: true,
-        action: true,
-        employee: { select: { name: true } },
-        meta_data: { select: { dept_name: true, claimant_name: true } },
-      },
-    });
-    if (!data || data.length === 0) {
-      return NextResponse.json(
-        { error: "Histories not found" },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json(data, { status: 200 });
-  } else {
+  const activePage = searchParams.get("activePage");
+  // if (searchParams.get("condensed") === "true") {
+  //   const data = await prisma.history.findMany({
+  //     select: {
+  //       time_stamp: true,
+  //       remarks: true,
+  //       action: true,
+  //       employee: { select: { name: true } },
+  //       meta_data: { select: { dept_name: true, claimant_name: true } },
+  //     },
+  //   });
+  //   if (!data || data.length === 0) {
+  //     return NextResponse.json(
+  //       { error: "Histories not found" },
+  //       { status: 404 }
+  //     );
+  //   }
+  //   return NextResponse.json(data, { status: 200 });
+  // } else {
     const histories = await prisma.history.findMany({
+      skip : ((activePage as any) -1)*2,
+      take : 2,
       distinct: ["meta_id"],
       include: {
         meta_data: true,
@@ -43,7 +46,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(histories);
-  }
+    return NextResponse.json(histories,{ status: 200 });
+  // }
   // return NextResponse.json([], { status: 200 });
 }
