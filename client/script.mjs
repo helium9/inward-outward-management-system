@@ -24,9 +24,9 @@ async function main() {
   //   const res = await prisma.employee.create({
   //   data:{
 
-  //     name     : "Arnav",
-  //     email    : "admin@admin.com",
-  //     isAdmin  : true
+  //     name     : "sup",
+  //     email    : "adityakshitiz4@gmail.com",
+  //     isAdmin  : false
   // }})
   // const res = await prisma.history.findMany();
   // const res = await prisma.meta.findMany({orderBy:{issue_date:'desc'}, select: {claimant_name:true, dept_name:true}});
