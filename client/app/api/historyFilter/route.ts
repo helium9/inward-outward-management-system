@@ -26,6 +26,7 @@ async function filterHistories(filterData: FilterData) {
       meta_data: true,
       employee: true,
     },
+    orderBy: { time_stamp: 'desc' },
   };
 
   // Add filter conditions to the query based on the filterData

@@ -110,15 +110,14 @@ const ClaimRow = ({
       .then((res) => console.log(res.data));
   };
   const [activePage, setActivePage] = useState(1);
-  console.log(activePage);
-  //adding margin or padding in any table component doesn't work.
+  // console.log(activePage);
   const formatTimestamp = (dateTime: string): string => {
     const date = new Date(dateTime);
     const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
     const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
     return `${formattedDate} at ${formattedTime}`;
-  };
-
+  }; 
+  //adding margin or padding in any table component doesn't work.
   return (
     <TableRow onClick={onClick}>
       <TableCell className="font-medium">
@@ -182,7 +181,6 @@ function Page({ params }: { params: { id: string } }) {
   useEffect(() => {
     // console.log(params.id);
     // console.log(session);
-    console.log(activePage);
 
     async function getData(sessionData: any, id: string) {
       const claimInfo = await axios.get("http://localhost:3000/api/claims", {
@@ -192,7 +190,13 @@ function Page({ params }: { params: { id: string } }) {
         },
       });
       setClaimData(claimInfo.data);
-
+      //
+      // const historyInfo = await axios.get(
+      //   "http://localhost:3000/api/claimHistory",
+      //   { params: { meta_id: id } }
+      // );
+      // setHistoryData(historyInfo.data);
+      //
       const empList = await axios.get("http://localhost:3000/api/employees");
       setEmployees(empList.data);
     }
@@ -246,7 +250,7 @@ function Page({ params }: { params: { id: string } }) {
     setDate(undefined);
   };
   const [activePage, setActivePage] = useState(1);
-  console.log(activePage);
+  // console.log(activePage);
   const [expanded, setExpanded] = useState(-1); //this is a single variable that'll be matched to the key in array map to decide which row is expanded.
   const handleExpandHistory = (key) => {
     setExpanded(key);
@@ -256,8 +260,13 @@ function Page({ params }: { params: { id: string } }) {
     remarks: "",
     action: "",
   });
+  const [emailDetails, setEmailDetails] = useState({
+    sending_mail: "",
+    subject: "",
+    body: "",
+  });
   const handleActionSubmit = () => {
-    console.log(actionTaken);
+    // console.log(actionTaken);
     axios
       .post("http://localhost:3000/api/claimHistory", {
         mode: "add",
@@ -266,9 +275,17 @@ function Page({ params }: { params: { id: string } }) {
       })
       .then((res) => console.log(res.data));
   };
+  
   useEffect(() => {
     getPagination();
-  }, [activePage]);
+  }, [activePage]); 
+
+  const handleSendMail = () => {
+    console.log(emailDetails);
+    axios
+      .post("http://localhost:3000/api/sendEmail", emailDetails)
+      .then((res) => console.log(res));
+  };
   return (
     <div>
       <Navbar />
@@ -374,7 +391,7 @@ function Page({ params }: { params: { id: string } }) {
                 Actions <ArrowOutward sx={{ fontSize: 20 }} />
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md overflow-y-scroll max-h-screen">
               <DialogHeader>
                 <DialogTitle>Take Action</DialogTitle>
                 <DialogDescription>
@@ -408,31 +425,95 @@ function Page({ params }: { params: { id: string } }) {
                   setActionTaken({ ...actionTaken, remarks: e.target.value })
                 }
                 id="remarks"
-                className="h-36"
+                className="h-26"
               />
-              <Label className="mt-2" htmlFor="allot">
-                Allot to
-              </Label>
-              <Select
-                onValueChange={(e) =>
-                  setActionTaken({ ...actionTaken, employee_id: e })
-                }
-              >
-                <SelectTrigger className="w-3/4">
-                  <SelectValue placeholder="Choose employee..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {employees.length !== 0 &&
-                      employees.map((item, ind) => (
-                        <SelectItem key={ind} value={item?.id}>
-                          {item?.name}
-                        </SelectItem>
-                      ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              {actionTaken.action !== "outward" && (
+                <div>
+                  <Label className="mt-2" htmlFor="allot">
+                    Allot to
+                  </Label>
+                  <Select
+                    onValueChange={(e) =>
+                      setActionTaken({ ...actionTaken, employee_id: e })
+                    }
+                  >
+                    <SelectTrigger className="w-3/4">
+                      <SelectValue placeholder="Choose employee..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {employees.length !== 0 &&
+                          employees.map((item, ind) => (
+                            <SelectItem key={ind} value={item?.id}>
+                              {item?.name}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              {actionTaken.action === "outward" && (
+                <div id="email-section" className="flex flex-col gap-3">
+                  <p className="font-medium">Send closing email</p>
+                  <Input
+                    value={emailDetails.sending_mail}
+                    onValueChange={(newValue) =>
+                      setEmailDetails({
+                        ...emailDetails,
+                        sending_mail: newValue,
+                      })
+                    }
+                    placeholder="Receiver address"
+                    label="To"
+                    labelPlacement="outside"
+                    variant="bordered"
+                    classNames={{
+                      mainWrapper: "",
+                      inputWrapper: "rounded-md border-1 shadow-sm",
+                      label: "font-medium",
+                    }}
+                    isClearable
+                  />
+                  <Input
+                    value={emailDetails.subject}
+                    onValueChange={(newValue) =>
+                      setEmailDetails({ ...emailDetails, subject: newValue })
+                    }
+                    placeholder="Enter the subject"
+                    label="Subject"
+                    labelPlacement="outside"
+                    variant="bordered"
+                    classNames={{
+                      mainWrapper: "",
+                      inputWrapper: "rounded-md border-1 shadow-sm",
+                      label: "font-medium",
+                    }}
+                    isClearable
+                  />
+                  <Label className="mt-2" htmlFor="email">
+                    Email Body
+                  </Label>
+                  <Textarea
+                    placeholder="Type your confirmation mail here."
+                    onChange={(e) =>
+                      setEmailDetails({ ...emailDetails, body: e.target.value })
+                    }
+                    id="email"
+                    className="h-36"
+                  />
+                </div>
+              )}
               <DialogFooter className="sm:justify-end">
+                {actionTaken.action === "outward" && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={handleSendMail}
+                  >
+                    Send Mail
+                  </Button>
+                )}
                 <DialogClose asChild>
                   <Button
                     type="button"

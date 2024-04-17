@@ -26,9 +26,7 @@ async function filterHistories(filterData: FilterData) {
       meta_data: true,
       employee: true,
     },
-    orderBy : {
-        time_stamp : 'desc',
-    },
+    orderBy: { time_stamp: 'desc' },
   };
 
   if (filterData.inward_number) {
@@ -94,6 +92,7 @@ async function filterHistories(filterData: FilterData) {
   const filteredHistories = await prisma.history.findMany({
     ...query,
     distinct : ['meta_id'],
+    orderBy : {time_stamp : 'desc'},
   });
   return filteredHistories;
 }

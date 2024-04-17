@@ -151,7 +151,7 @@ const Page: React.FC = () => {
 
   const handleFilterApply = async () => {
     try {
-      const response = await axios.post('/api/filter', filterData); // Send filter data to backend
+      const response = await axios.post('/api/historyFilter', filterData); // Send filter data to backend
       setData(response.data); // Update state with filtered data
     } catch (error) {
       console.error('Error filtering histories:', error);

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
-  console.log(data);
+  // console.log(data);
   if (data !== null) {
     if (data.mode === "add") {
       const {meta_id, employee_id, remarks, action} = data;
