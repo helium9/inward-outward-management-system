@@ -297,25 +297,7 @@ export default function Home() {
             <div className="my-4 flex flex-row items-center">
               <p className="text-2xl font-bold">Registered Employees</p>
               <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
-                {/* <div className="flex items-center min-w-40 space-x-2">
-                <Checkbox id="terms" />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Show current user
-                </label>
-              </div> */}
-                {/* <FilterDialog
-                date={date}
-                setDate={setDate}
-                filterData={filterData}
-                setFilterData={setFilterData}
-                handleFilterApply={handleFilterApply}
-                handleFilterClear={handleFilterClear}
-                labels={filterLabels}
-              /> */}
-
+                
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button

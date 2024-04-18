@@ -70,6 +70,7 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
   indName,
   deptName,
   partyName,
+  issueDate,
   claimantName,
   inwardNumber,
   amount,

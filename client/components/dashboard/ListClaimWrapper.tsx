@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -15,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Phone,
   MailOutline,
@@ -30,8 +31,7 @@ import {
 } from "@mui/icons-material";
 import { Input } from "@nextui-org/react";
 import { ReactNode } from "react";
-import Link from 'next/link';
-
+import Link from "next/link";
 
 const ListClaimWrapper = ({
   title,
@@ -41,66 +41,47 @@ const ListClaimWrapper = ({
 }: {
   title: string;
   condensed: boolean;
-  linkAddress:string;
+  linkAddress: string;
   children: ReactNode[];
 }) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const filteredChildren = children.filter((child: ReactNode) => {
+    if (searchQuery.trim() === "") {
+      return true;
+    }
+    const claimWrapper = child as React.ReactElement<{
+      name: string;
+      info: string;
+      action: { e_name: string; remarks: string };
+    }>;
+
+    const name = claimWrapper.props.name.toLowerCase();
+    const info = claimWrapper.props.info.toLowerCase();
+    const e_name = claimWrapper.props.action?.e_name.toLowerCase();
+    const remarks = claimWrapper.props.action?.remarks.toLowerCase();
+
+    const query = searchQuery.trim().toLowerCase();
+    return (
+      name.includes(query) ||
+      info.includes(query) ||
+      e_name.includes(query) ||
+      remarks.includes(query)
+    );
+  });
+
+  const renderChildren = filteredChildren.map(
+    (child: ReactNode, index: number) => {
+      return <div key={index}>{child}</div>;
+    }
+  );
   const searchBoxThemeText = !condensed ? `m-0 max-w-96` : "m-0 w-10";
-
-  // Extract the URL from the title prop
-
-  // Determine the appropriate "View More" link based on the titleLink
-  // let viewMoreLink;
-  // switch (titleLink) {
-  //   case '/claimList':
-  //     viewMoreLink = '/claimList';
-  //     break;
-  //   case '/history':
-  //     viewMoreLink = '/history';
-  //     break;
-  //   case '/incomingClaims':
-  //     viewMoreLink = '/incomingClaims';
-  //     break;
-  //   default:
-  //     viewMoreLink = '#';
-  // }
 
   return (
     <Card className="rounded-md w-full !px-3 min-w-80">
       <div className="flex flex-row items-center m-4 place-content-between">
         <CardTitle className="text-xl font-bold min-w-36">{title}</CardTitle>
         <div className="flex flex-row gap-2 w-fit">
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger
-              className={
-                `flex flex-row items-center` + (condensed ? "" : `sm:min-w-28`)
-              }
-              asChild
-            >
-              <Button
-                variant="outline"
-                className={
-                  `bg-slate-100 p-2 text-zinc-600 h-8 border-zinc-300 m-0 rounded` +
-                  (condensed ? `w-fit` : `w-full`)
-                }
-              >
-                <FilterAltOutlined />
-                <div className="flex-row items-center hidden sm:flex">
-                  {!condensed && <p className="pl-1 pr-2 mr-auto">Filter</p>}
-                  {!condensed && (
-                    <ExpandCircleDownOutlined sx={{ fontSize: 16 }} />
-                  )}
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Filter</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Filter1</DropdownMenuItem>
-              <DropdownMenuItem>Filter2</DropdownMenuItem>
-              <DropdownMenuItem>Filter3</DropdownMenuItem>
-              <DropdownMenuItem>Filter4</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu> */}
           <div className="hidden sm:block">
             <Input
               size="sm"
@@ -111,7 +92,8 @@ const ListClaimWrapper = ({
               }}
               placeholder={condensed ? `` : `Search`}
               startContent={<Search sx={{ color: "#999999" }} />}
-              
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <div className="block sm:hidden">
@@ -123,15 +105,17 @@ const ListClaimWrapper = ({
                 inputWrapper: "rounded border-zinc-200 border",
               }}
               startContent={<Search sx={{ color: "#999999" }} />}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </div>
       </div>
-      <CardContent className="flex flex-col"><ScrollArea className="h-48">{children}</ScrollArea></CardContent>
+      <CardContent className="flex flex-col">
+        <ScrollArea className="h-48">{renderChildren}</ScrollArea>
+      </CardContent>
       <CardFooter className="text-zinc-500 text-xs underline">
-      <Link href={linkAddress}>
-          View More
-        </Link>
+        <Link href={linkAddress}>View More</Link>
       </CardFooter>
     </Card>
   );
