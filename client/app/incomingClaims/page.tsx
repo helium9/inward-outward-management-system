@@ -56,7 +56,6 @@ interface ClaimRowProps {
   claimantName: string;
   inwardNumber: number;
   inwardDate : Date;
-  issueDate: string;
   amount: number;
   advancedReq: boolean;
   lastAction: string;
@@ -73,7 +72,6 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
   partyName,
   claimantName,
   inwardNumber,
-  issueDate,
   amount,
   advancedReq,
   id,
@@ -130,7 +128,7 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
 
 const filterLabels = {
   inward_number:"Invoice number",
-  issue_date: "Issue Date",
+  inward_date: "Inward Date",
   ind_name:"Indentor name",
   dept_name:"Department name",
   party_name:"Party name",
@@ -147,7 +145,7 @@ const Page: React.FC = () => {
   const [filterData, setFilterData] = useState({
     //state of selected filters
     inward_number: "",
-    issue_date: "",
+    inward_date: "",
     ind_name: "",
     dept_name: "",
     party_name: "",
@@ -171,7 +169,7 @@ const Page: React.FC = () => {
     setFilterData({
       //state of selected filters
       inward_number: "",
-      issue_date: "",
+      inward_date: "",
       ind_name: "",
       dept_name: "",
       party_name: "",

@@ -87,7 +87,7 @@ function FilterDialog({
                   {date ? (
                     format(date, "PPP")
                   ) : (
-                    <span className="text-slate-500">{labels.issue_date}</span>
+                    <span className="text-slate-500">{labels.inward_date}</span>
                   )}
                 </Button>
               </PopoverTrigger>
@@ -95,11 +95,11 @@ function FilterDialog({
                 <Calendar mode="single" selected={date} onSelect={setDate} />
               </PopoverContent>
             </Popover>
-            {Object.keys(filterData).map((key) => {
+            {Object.keys(filterData).map((key, ind) => {
               // console.log(key);
               return((key!=='issue_date')&&
               <Input
-                key={key} // Assign a unique key to each Input component
+                key={ind} // Assign a unique key to each Input component
                 label={labels[key]} // Convert key to human-readable label
                 className="w-full"
                 size="sm"

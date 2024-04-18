@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from "../../db/db";
+import { getServerSession } from "next-auth";
 
 interface FilterData {
   inward_number?: string;
-  issue_date?: string;
   inward_date?: string;
   ind_name?: string;
   dept_name?: string;
@@ -14,13 +14,21 @@ interface FilterData {
   status?: string;
   alloted_to_name?: string;
   advanced_req?: string;
+  activePage: Number;
 }
 
 async function filterHistories(filterData: FilterData) {
+  const session = await getServerSession();
+  const _count = await prisma.employee.count({
+    where: { email: session?.user.email },
+  });
+  // console.log(_count);
   // Construct Prisma query based on the filterData
   const query = {
+    skip: ((filterData.activePage as any) - 1) * 3,
+    take: 3,
     where: {
-      meta_data: {},
+      meta_data: _count === 0 ? { origin: session?.user.email } : {},
     },
     include: {
       meta_data: true,
@@ -97,6 +105,7 @@ async function filterHistories(filterData: FilterData) {
 
 export async function POST(req: NextRequest) {
   const filterData: FilterData = await req.json();
+  // console.log(filterData);
   const filteredHistories = await filterHistories(filterData);
   return NextResponse.json(filteredHistories);
 }

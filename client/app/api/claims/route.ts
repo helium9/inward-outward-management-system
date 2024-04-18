@@ -12,9 +12,9 @@ export async function GET(request: NextRequest) {
   });
   // console.log(_count);
   if (searchParams.get("condensed") === "true") {
-    if (searchParams.get("status") === "new" && _count != 0) {
+    if (searchParams.get("status") === "new") {
       const data = await prisma.meta.findMany({
-        where: { status: "new" },
+        where: _count!==0?{ status: "new" }:{status:'new', origin:searchParams.get("email") as string},
         orderBy: { issue_date: "desc" },
         select: { id: true, claimant_name: true, dept_name: true },
       });
