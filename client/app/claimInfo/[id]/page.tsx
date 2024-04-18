@@ -166,6 +166,7 @@ function Page({ params }: { params: { id: string } }) {
     amount: 0,
     claimant_name: "not available",
     dept_name: "not available",
+    origin:"not available",
     id: "not available",
     ind_name: "not available",
     inward_date: null,
@@ -332,10 +333,12 @@ function Page({ params }: { params: { id: string } }) {
                       <div className="flex flex-col mr-12">
                         <p>Name</p>
                         <p>Department Name</p>
+                        <p>Email</p>
                       </div>
                       <div className="flex flex-col text-zinc-500">
                         <p>{claimData.ind_name}</p>
                         <p>{claimData.dept_name}</p>
+                        <p>{claimData.origin}</p>
                       </div>
                     </div>
                   </TableCell>

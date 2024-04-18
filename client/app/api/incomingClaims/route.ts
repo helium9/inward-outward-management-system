@@ -6,16 +6,13 @@ import { getServerSession } from "next-auth";
 
 export async function GET(request:NextRequest){
     const session = await getServerSession();
-    const user = await prisma.employee.count({where:{email:session?.user.email}});
-    if(user!=0){
-        const searchParams = request.nextUrl.searchParams;
-        const activePage = searchParams.get("activePage");
-        const data = await prisma.meta.findMany({
-            skip : ((activePage as any) -1)*3,
-            take : 3,
-            where : {alloted_to_id : null},
-        });
-        return NextResponse.json(data);
-    }
-    return NextResponse.json([]);
+    const _count = await prisma.employee.count({where:{email:session?.user.email}});
+    const searchParams = request.nextUrl.searchParams;
+    const activePage = searchParams.get("activePage");
+    const data = await prisma.meta.findMany({
+        skip : ((activePage as any) -1)*3,
+        take : 3,
+        where : _count!==0?{status : 'new'}:{status : 'new', origin:session?.user.email},
+    });
+    return NextResponse.json(data);
 }

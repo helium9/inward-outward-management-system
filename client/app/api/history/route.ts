@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
   const _count = await prisma.employee.count({
     where: { email: session?.user.email },
   });
+  // console.log("count ", _count);
   //   console.log(searchParams);
   if (searchParams.get("condensed") === "true") {
     const data = await prisma.history.findMany({
@@ -22,14 +23,9 @@ export async function GET(request: NextRequest) {
         employee: { select: { name: true } },
         meta_data: { select: { dept_name: true, claimant_name: true } },
       },
+      where:{meta_data: _count === 0 ? { origin: session?.user.email } : {}},
       orderBy: { time_stamp: 'desc' },
     });
-    if (!data || data.length === 0) {
-      return NextResponse.json(
-        { error: "Histories not found" },
-        { status: 404 }
-      );
-    }
     return NextResponse.json(data, { status: 200 });
   } else {
     const histories = await prisma.history.findMany({

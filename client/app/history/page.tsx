@@ -1,7 +1,7 @@
-'use client';
-import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+"use client";
+import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "@/components/Navbar";
 import {
   Table,
@@ -44,8 +44,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {  LastPage, FirstPage } from "@mui/icons-material";
-
+import { LastPage, FirstPage } from "@mui/icons-material";
 
 import FilterDialog from "@/components/FilterDialog";
 
@@ -57,7 +56,6 @@ interface ClaimRowProps {
   claimantName: string;
   inwardNumber: number;
   inwardDate: Date;
-  issueDate: string;
   amount: number;
   advancedReq: boolean;
   lastAction: string;
@@ -75,7 +73,6 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
   claimantName,
   inwardNumber,
   inwardDate,
-  issueDate,
   amount,
   advancedReq,
   lastActionRemarks,
@@ -94,8 +91,8 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
   const info = `${deptName}`;
   const invoice_details = `${inwardNumber}`;
   const inwardDateObject = new Date(inwardDate);
-  const formattedInwardDate = inwardDateObject.toISOString().split('T')[0];
-  const paymentTo = partyName !== 'none' ? partyName : claimantName;
+  const formattedInwardDate = inwardDateObject.toISOString().split("T")[0];
+  const paymentTo = partyName !== "none" ? partyName : claimantName;
 
   return (
     <TableRow>
@@ -140,7 +137,7 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
 
 const filterLabels = {
   inward_number: "Invoice number",
-  issue_date: "Issue Date",
+  inward_date: "Inward Date",
   ind_name: "Indentor name",
   dept_name: "Department name",
   party_name: "Party name",
@@ -148,16 +145,14 @@ const filterLabels = {
   subject: "Subject",
   amount: "Amount",
   status: "Status",
-  alloted_to_name: "Alloted to"
-}
-
+  alloted_to_name: "Alloted to",
+};
 
 const Page: React.FC = () => {
   const [date, setDate] = React.useState<Date>(); // date from filter options
   const [filterData, setFilterData] = useState({
     // state of selected filters
     inward_number: "",
-    issue_date: "",
     ind_name: "",
     dept_name: "",
     party_name: "",
@@ -170,10 +165,11 @@ const Page: React.FC = () => {
 
   const handleFilterApply = async () => {
     try {
-      const response = await axios.post('/api/historyFilter', filterData); // Send filter data to backend
+      const payload = {...filterData, activePage:activePage, inward_date:date};
+      const response = await axios.post("/api/historyFilter", payload); // Send filter data to backend
       setHistories(response.data); // Update state with filtered data
     } catch (error) {
-      console.error('Error filtering histories:', error);
+      console.error("Error filtering histories:", error);
     }
   };
 
@@ -181,7 +177,6 @@ const Page: React.FC = () => {
     setFilterData({
       // state of selected filters
       inward_number: "",
-      issue_date: "",
       ind_name: "",
       dept_name: "",
       party_name: "",
@@ -196,40 +191,26 @@ const Page: React.FC = () => {
   };
 
   const [histories, setHistories] = useState<ClaimRowProps[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [activePage, setActivePage] = useState(1);
 
   // useEffect(() => {
   //   fetchHistories();
   // }, []);
 
-  const getPagination = async () => {
-
-    try {
-      const response = await axios.get('http://localhost:3000/api/history', { params: {  activePage: activePage } });
-      setHistories(response.data);
-    } catch (error) {
-      console.error('Error fetching histories:', error);
-    }
-  };
-
   useEffect(() => {
-    getPagination();
-  }, [activePage]); 
-
-  // const fetchHistories = async () => {
-  //   try {
-  //     const response = await axios.get('/api/history');
-  //     setHistories(response.data);
-  //   } catch (error) {
-  //     console.error('Error fetching histories:', error);
-  //   }
-  // };
+    handleFilterApply();
+  }, [activePage]);
 
   const filteredHistories = histories.filter((history) => {
     const searchTermLower = searchTerm.toLowerCase();
-    const inwardNumber = history.meta_data.inward_number.toString().toLowerCase();
-    const inwardDate = new Date(history.meta_data.inward_date).toISOString().split('T')[0].toLowerCase();
+    const inwardNumber = history.meta_data.inward_number
+      .toString()
+      .toLowerCase();
+    const inwardDate = new Date(history.meta_data.inward_date)
+      .toISOString()
+      .split("T")[0]
+      .toLowerCase();
     const indName = history.meta_data.ind_name.toLowerCase();
     const employeeName = history.employee.name.toLowerCase();
     const deptName = history.meta_data.dept_name.toLowerCase();
@@ -237,7 +218,7 @@ const Page: React.FC = () => {
     const claimantName = history.meta_data.claimant_name.toLowerCase();
     const lastActionRemarks = history.remarks.toLowerCase();
     const actionTakenBy = history.employee.name.toLowerCase();
-  
+
     return (
       inwardNumber.includes(searchTermLower) ||
       inwardDate.includes(searchTermLower) ||
@@ -250,65 +231,65 @@ const Page: React.FC = () => {
       actionTakenBy.includes(searchTermLower)
     );
   });
-  
+
   return (
     <div>
-      <Navbar/>
-    <main className="p-2 px-4 sm:px-10 xl:px-24">
-      <div className="my-4 flex flex-row items-center">
-        <p className="text-3xl font-bold">History</p>
-        <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
-          <div className="flex items-center min-w-40 space-x-2">
-            <Checkbox id="terms" />
-            <label
-              htmlFor="terms"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Show current user
-            </label>
+      <Navbar />
+      <main className="p-2 px-4 sm:px-10 xl:px-24">
+        <div className="my-4 flex flex-row items-center">
+          <p className="text-3xl font-bold">History</p>
+          <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
+            <div className="flex items-center min-w-40 space-x-2">
+              <Checkbox id="terms" />
+              <label
+                htmlFor="terms"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Show current user
+              </label>
+            </div>
+
+            <FilterDialog
+              date={date}
+              setDate={setDate}
+              filterData={filterData}
+              setFilterData={setFilterData}
+              handleFilterApply={handleFilterApply}
+              handleFilterClear={handleFilterClear}
+              labels={filterLabels}
+            />
+            <Input
+              size="sm"
+              variant="bordered"
+              classNames={{
+                base: `m-0`,
+                inputWrapper: "rounded border-zinc-200 border",
+              }}
+              placeholder={`Search`}
+              startContent={<Search sx={{ color: "#999999" }} />}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-       
-          <FilterDialog
-            date={date}
-            setDate={setDate}
-            filterData={filterData}
-            setFilterData={setFilterData}
-            handleFilterApply={handleFilterApply}
-            handleFilterClear={handleFilterClear}
-            labels={filterLabels}
-          />
-          <Input
-            size="sm"
-            variant="bordered"
-            classNames={{
-              base: `m-0`,
-              inputWrapper: "rounded border-zinc-200 border",
-            }}
-            placeholder={`Search`}
-            startContent={<Search sx={{ color: "#999999" }} />}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
         </div>
-      </div>
-      <div className="rounded-md border border-zinc-300">
-        <Table>
-          <TableHeader>
-            <TableRow className="text-zinc-500 font-semibold">
-              <TableHead className="w-56">
-                <p className="ml-6">Indentor Details</p>
-              </TableHead>
-              <TableHead className="w-50">Recipient</TableHead>
-              <TableHead className="w-40">Invoice Number</TableHead>
-              <TableHead className="w-40">Inward Date</TableHead>
-              <TableHead>Last Action Remarks</TableHead>
-              <TableHead className="w-80">
-                <p className="mr-6">Action taken by</p>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-          {filteredHistories.map((history, index) => (
+        <div className="rounded-md border border-zinc-300">
+          <Table>
+            <TableHeader>
+              <TableRow className="text-zinc-500 font-semibold">
+                <TableHead className="w-56">
+                  <p className="ml-6">Indentor Details</p>
+                </TableHead>
+                <TableHead className="w-50">Recipient</TableHead>
+                <TableHead className="w-40">Invoice Number</TableHead>
+                <TableHead className="w-40">Inward Date</TableHead>
+                <TableHead>Last Action Remarks</TableHead>
+                <TableHead className="w-80">
+                  <p className="mr-6">Action taken by</p>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredHistories.map((history, index) => (
                 <ClaimRow
                   key={index}
                   type={history.action}
@@ -318,18 +299,17 @@ const Page: React.FC = () => {
                   claimantName={history.meta_data.claimant_name}
                   inwardNumber={history.meta_data.inward_number}
                   inwardDate={history.meta_data.inward_date}
-                  issueDate={history.meta_data.issue_date}
                   lastAction={history.action}
                   lastActionRemarks={history.remarks}
                   actionTakenBy={history.employee.name}
                   actionTimestamp={history.time_stamp}
-                  meta_id = {history.meta_id}
+                  meta_id={history.meta_id}
                 />
               ))}
-        </TableBody>
-        </Table>
-      </div>
-      <section className="my-4">
+            </TableBody>
+          </Table>
+        </div>
+        <section className="my-4">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -395,9 +375,9 @@ const Page: React.FC = () => {
             </PaginationContent>
           </Pagination>
         </section>
-    </main>
+      </main>
     </div>
   );
 };
 
-export default Page; 
+export default Page;

@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 
 interface FilterData {
   inward_number?: string;
-  issue_date?: string;
   inward_date?: string;
   ind_name?: string;
   dept_name?: string;
@@ -15,6 +14,7 @@ interface FilterData {
   status?: string;
   alloted_to_name?: string;
   advanced_req?: string;
+  activePage: Number;
 }
 
 async function filterHistories(filterData: FilterData) {
@@ -23,6 +23,8 @@ async function filterHistories(filterData: FilterData) {
     where: { email: session?.user.email },
   });
   const query = {
+    skip: ((filterData.activePage as any) - 1) * 3,
+    take: 3,
     where: {
       meta_data: _count === 0 ? { origin: session?.user.email } : {},
     },
@@ -36,11 +38,8 @@ async function filterHistories(filterData: FilterData) {
   if (filterData.inward_number) {
     query.where.meta_data.inward_number = parseInt(filterData.inward_number);
   }
-  if (filterData.issue_date) {
-    query.where.meta_data.issue_date = new Date(filterData.issue_date);
-  }
   if (filterData.inward_date) {
-    query.where.meta_data.inward_date = new Date(filterData.inward_date);
+    query.where.meta_data.inward_date = filterData.inward_date;
   }
   if (filterData.ind_name) {
     query.where.meta_data.ind_name = {
@@ -103,6 +102,7 @@ async function filterHistories(filterData: FilterData) {
 
 export async function POST(req: NextRequest) {
   const filterData: FilterData = await req.json();
+  // console.log(filterData);
   const filteredHistories = await filterHistories(filterData);
   return NextResponse.json(filteredHistories);
 }

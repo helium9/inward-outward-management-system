@@ -272,10 +272,9 @@ export default function Home() {
               ))}
           </ListClaimWrapper>
 
-          {userInfo.type !== "Claimant" && (
-            <div>
+          <div>
               <ListClaimWrapper
-                title="Incoming Claims"
+                title={(userInfo.type !== "Claimant")?"Incoming Claims":"Pending Claims"}
                 linkAddress="/incomingClaims"
                 condensed={true}
               >
@@ -292,7 +291,6 @@ export default function Home() {
                   ))}
               </ListClaimWrapper>
             </div>
-          )}
         </section>
         {userInfo.type === "Admin" && (
           <section className="mt-14">

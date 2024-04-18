@@ -46,7 +46,7 @@ async function main() {
   //     meta_id: "9ae9f64d-67f4-4e83-aae3-e45dc1a399ab",
   //   },
   // });
-  const res=await prisma.employee.count({where: {email:"adityakshitiz2017@gmail.com"}});
+  const res=await prisma.meta.findMany({where: {origin:"cse220001004@iiti.ac.in"}});
   console.log(res);
 }
 
