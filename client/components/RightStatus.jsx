@@ -1,4 +1,4 @@
-export default function RightStatus({ heading, employee }) {
+export default function RightStatus({ heading,prevEmpl}) {
   const dateTime = new Date(heading.time_stamp);
   const date = dateTime.toLocaleDateString(); 
   const time = dateTime.toLocaleTimeString();
@@ -13,11 +13,11 @@ export default function RightStatus({ heading, employee }) {
       <div className="flex flex-col">
         <div className="flex justify-between">
             <p className="text-base font-medium font-dmSans">Forwarded By</p>
-            <p>{heading.employee.name}</p>
+            <p>{prevEmpl.employee.name}</p>
         </div>
         <div className="flex justify-between">
             <p className="text-base font-medium font-dmSans">Forwarded to</p>
-            <p>{employee.name}</p>
+            <p>{heading.employee.name}</p>
         </div>  
         <div className="flex justify-between">
             <p className="text-base font-medium font-dmSans">Remarks</p>

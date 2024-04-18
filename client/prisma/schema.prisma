@@ -28,7 +28,7 @@ model Meta {
   advanced_req  Boolean?
   managed_by_id Employee? @relation(fields: [alloted_to_id], references: [id])
   alloted_to_id String?   @db.VarChar(255)
-  status        String    @db.VarChar(255)
+  status        String    @db.VarChar(255)  
   history       History[]
 }
 

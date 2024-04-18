@@ -12,7 +12,7 @@ import Footer from "@/components/Footer";
 const Page = () => {
   const { id } = useParams();
   const [data, setData] = useState(null);
-  const [employees, setEmployees] = useState(null); // State to hold employees data
+  const [employees, setEmployees] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,9 +21,9 @@ const Page = () => {
           `http://localhost:3000/api/tracking/history/?meta_id=${id}`
         );
         const responseData = await response.json();
-        console.log(responseData);
-        setData(responseData.history); // Set history data
-        setEmployees(responseData.employees); // Set employees data
+        // console.log(responseData);
+        setData(responseData.history);
+        setEmployees(responseData.employees);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -45,21 +45,25 @@ const Page = () => {
             // marginBottom: "50px",
           }}
         >
-          <Invoice data={data} employees={employees} /> 
+          <Invoice data={data} employees={employees} />
         </div>
         {data?.map((ele, index) => {
+          const prevEle = index !== 0 ? data[index - 1] : null;
+          console.log(prevEle)
           return (
             <div key={index}>
-              {index % 2 == 0 ? (
-                <RightCard data={ele} employees={employees} />
+              {index === 0 ? (
+                <RightCard data={ele} prevData={ele}/>
+              ) : index % 2 == 0 ? (
+                <RightCard data={ele} prevData={prevEle} />
               ) : (
-                <LeftCard data={ele} employees={employees} />
+                <LeftCard data={ele} prevData={prevEle} />
               )}
             </div>
           );
         })}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

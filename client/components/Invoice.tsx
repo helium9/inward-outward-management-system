@@ -81,7 +81,7 @@ const Invoice: React.FC<InvoiceProps> = ({ data, employees }) => {
           <p>{metaData?.advanced_req ? 'YES' : 'NO'}</p>
         </div>
         <div className="payment-info bg-gray-100 p-2 rounded-md flex justify-between">
-          <p className="text-base font-medium font-dmSans">Alloted to</p>
+          <p className="text-base font-medium font-dmSans">Currently Alloted to</p>
           <p>{employeeData ? employeeData.name : 'N/A'}</p>
         </div>
       </div>

@@ -1,4 +1,4 @@
-export default function LeftStatus({ heading, employee }) {
+export default function LeftStatus({ heading,prevEmpl}) {
   const dateTime = new Date(heading.time_stamp);
   const date = dateTime.toLocaleDateString(); 
   const time = dateTime.toLocaleTimeString();
@@ -12,11 +12,12 @@ export default function LeftStatus({ heading, employee }) {
       <hr className="my-4" />
       <div className="flex flex-col">
         <div className="flex justify-between">
-          <p>{heading.employee.name}</p>
+          <p>{prevEmpl.employee.name}</p>
           <p className="text-base font-medium font-dmSans">Forwarded from</p>
         </div>
         <div className="flex justify-between">
-          <p>{employee.name}</p>
+          {/* <p>{employee.name}</p> */}
+          <p>{heading.employee.name}</p>
           <p className="text-base font-medium font-dmSans">Forwarded to</p>
         </div>
         <div className="flex justify-between">

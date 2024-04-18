@@ -69,14 +69,13 @@ const ListClaimWrapper = ({
       <div className="flex flex-row items-center m-4 place-content-between">
         <CardTitle className="text-xl font-bold min-w-36">{title}</CardTitle>
         <div className="flex flex-row gap-2 w-fit">
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger
               className={
                 `flex flex-row items-center` + (condensed ? "" : `sm:min-w-28`)
               }
               asChild
             >
-              {/* used asChild to prevent button in button hydration error. Refer: https://github.com/shadcn-ui/ui/issues/1626 */}
               <Button
                 variant="outline"
                 className={
@@ -101,7 +100,7 @@ const ListClaimWrapper = ({
               <DropdownMenuItem>Filter3</DropdownMenuItem>
               <DropdownMenuItem>Filter4</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
           <div className="hidden sm:block">
             <Input
               size="sm"
@@ -112,6 +111,7 @@ const ListClaimWrapper = ({
               }}
               placeholder={condensed ? `` : `Search`}
               startContent={<Search sx={{ color: "#999999" }} />}
+              
             />
           </div>
           <div className="block sm:hidden">
