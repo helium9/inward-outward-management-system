@@ -61,6 +61,16 @@ import {
   ContentPasteGoOutlined,
   ArrowOutward,
 } from "@mui/icons-material";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetFooter,
+  SheetClose,
+} from "@/components/ui/sheet";
 import EditIcon from "@mui/icons-material/Edit";
 
 const filterLabels = {
@@ -113,10 +123,17 @@ const ClaimRow = ({
   // console.log(activePage);
   const formatTimestamp = (dateTime: string): string => {
     const date = new Date(dateTime);
-    const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-    const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+    });
     return `${formattedDate} at ${formattedTime}`;
-  }; 
+  };
   //adding margin or padding in any table component doesn't work.
   return (
     <TableRow onClick={onClick}>
@@ -166,7 +183,7 @@ function Page({ params }: { params: { id: string } }) {
     amount: 0,
     claimant_name: "not available",
     dept_name: "not available",
-    origin:"not available",
+    origin: "not available",
     id: "not available",
     ind_name: "not available",
     inward_date: null,
@@ -177,8 +194,38 @@ function Page({ params }: { params: { id: string } }) {
     status: "not available",
     subject: "not available",
   });
+  const [completeClaimInfo, setCompleteClaimData] = useState({
+    advanced_req: null,
+    amount: 0,
+    claimant_name: "not available",
+    dept_name: "not available",
+    origin: "not available",
+    id: "not available",
+    ind_name: "not available",
+    inward_date: null,
+    inward_number: 0,
+    issue_date: "not available",
+    managed_by_id: { name: "not available" },
+    party_name: "none",
+    status: "not available",
+    subject: "not available",
+  });
+
+  const [changedData, setChangedData] = useState({});
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setChangedData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+
   const [historyData, setHistoryData] = useState([]);
+
   // console.log(claimData);
+  
   useEffect(() => {
     // console.log(params.id);
     // console.log(session);
@@ -190,7 +237,16 @@ function Page({ params }: { params: { id: string } }) {
           id: id,
         },
       });
+
+      const completeClaimInfo = await axios.get("http://localhost:3000/api/editClaim" , {
+        params: {
+          ...sessionData,
+          id : id,
+        }
+      });
+      // console.log(claimInfo.data)
       setClaimData(claimInfo.data);
+      setCompleteClaimData(completeClaimInfo.data);
       //
       // const historyInfo = await axios.get(
       //   "http://localhost:3000/api/claimHistory",
@@ -205,6 +261,28 @@ function Page({ params }: { params: { id: string } }) {
     if (session && status === "authenticated")
       getData(session?.user, params.id);
   }, [session]);
+
+  const handleSubmitEdit = (e) => {
+    console.log("called")
+    try {
+      
+      const updatedClaimData = {
+        ...completeClaimInfo,
+        ...changedData,
+      };
+      
+      console.log("Updated: ",updatedClaimData)
+      axios.put("http://localhost:3000/api/editClaim", updatedClaimData);
+  
+      // Update the claimData state with the edited data
+      setCompleteClaimData(updatedClaimData);
+  
+      // Reset the changedData state or close the edit form
+      setChangedData({});
+    } catch (error) {
+      console.error("Error updating claim:", error);
+    }
+  };
 
   const getPagination = async () => {
     const historyInfo = await axios.get(
@@ -276,10 +354,10 @@ function Page({ params }: { params: { id: string } }) {
       })
       .then((res) => console.log(res.data));
   };
-  
+
   useEffect(() => {
     getPagination();
-  }, [activePage]); 
+  }, [activePage]);
 
   const handleSendMail = () => {
     console.log(emailDetails);
@@ -291,7 +369,131 @@ function Page({ params }: { params: { id: string } }) {
     <div>
       <Navbar />
       <main className="p-2 px-4 sm:px-10 xl:px-24">
-        <div className="text-2xl font-extrabold my-4">Claim information</div>
+        <div className="flex items-center p-3">
+          <Sheet>
+            <SheetTrigger>
+              <EditIcon />
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Edit Claim Information</SheetTitle>
+                <SheetDescription>Intendor Information</SheetDescription>
+              </SheetHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-left">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder={claimData.ind_name}
+                    className="col-span-3 bg-zinc-50"
+                    onChange={handleInputChange}
+                    name="ind_name"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="username" className="text-left">
+                    Department
+                  </Label>
+                  <Input
+                    id="username"
+                    placeholder={claimData.dept_name}
+                    className="col-span-3 bg-zinc-50"
+                    onChange={handleInputChange}
+                    name="dept_name"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="username" className="text-left">
+                    Invoice Number
+                  </Label>
+                  <Input
+                    id="number"
+                    type="integer"
+                    placeholder={claimData.inward_number}
+                    className="col-span-3 bg-zinc-50"
+                    onChange={handleInputChange}
+                    name="inward_number"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="username" className="text-left">
+                    Issue Date
+                  </Label>
+                  <Input
+                    placeholder={claimData.issue_date.substring(0, 10)}
+                    className="col-span-3 bg-zinc-50"
+                    disabled
+                  />
+                </div>
+                <SheetDescription>
+                  Claim Details (Payment to be made to)
+                </SheetDescription>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-left">
+                    Claimant Name
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder={claimData.claimant_name}
+                    className="col-span-3 bg-zinc-50"
+                    onChange={handleInputChange}
+                    name="claimant_name"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-left">
+                    Party Name
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder={claimData.party_name}
+                    className="col-span-3 bg-zinc-50"
+                    onChange={handleInputChange}
+                    name="party_name"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-left">
+                    Subject
+                  </Label>
+                  <Textarea
+                    placeholder={claimData.subject}
+                    id="message-2"
+                    className="col-span-3 bg-zinc-50"
+                    onChange={handleInputChange}
+                    name="subject"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-left">
+                    Amount
+                  </Label>
+                  <Input
+                    type="integer"
+                    id="name"
+                    placeholder={`₹${claimData.amount}`}
+                    className="col-span-3 bg-zinc-50"
+                    onChange={handleInputChange}
+                    name="amount"
+                  />
+                </div>
+              </div>
+                <SheetFooter>
+                  <SheetClose asChild>
+                    <Button
+                      type="submit"
+                      onClick={handleSubmitEdit}
+                    >
+                      Save changes
+                    </Button>
+                  </SheetClose>
+                </SheetFooter>
+            </SheetContent>
+          </Sheet>
+          <div className="text-2xl font-extrabold ml-2">Claim information</div>
+        </div>
         <section className="flex flex-col lg:flex-row gap-4">
           <div className="rounded-md border border-zinc-300 w-full">
             <Table>
@@ -312,7 +514,7 @@ function Page({ params }: { params: { id: string } }) {
                             <p>Issue date</p>
                             <p>
                               {" "}
-                              {/* &nbsp; {claimData.issue_date.substring(0, 10)} */}
+                              &nbsp; {claimData.issue_date.substring(0, 10)}
                             </p>
                           </span>
                         </div>
@@ -384,6 +586,7 @@ function Page({ params }: { params: { id: string } }) {
             </Table>
           </div>
         </section>
+        {/* {showEditForm && <EditForm/>} */}
         <section className="py-4 flex flex-row justify-end">
           <Dialog>
             <DialogTrigger asChild>

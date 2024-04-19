@@ -42,3 +42,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Error storing data" }, { status: 500 });
   }
 }
+
