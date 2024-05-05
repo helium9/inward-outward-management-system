@@ -28,6 +28,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Checkbox } from "@nextui-org/react";
 import axios from "axios";
+import { useToast } from "@/components/ui/use-toast";
+import { redirect } from 'next/navigation';
 
 export default function page() {
   const { data: session, status } = useSession();
@@ -53,9 +55,10 @@ export default function page() {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-
-  const info = (e) => {
+  const { toast } = useToast();
+  const info = async (e) => {
     e.preventDefault();
+    e.currentTarget.disabled=true;
     console.log(formData);
     if (session && status === "authenticated") {
       axios
@@ -72,17 +75,25 @@ export default function page() {
           advanced_req: formData.advanced_req,
         })
         .then((response) => {
-          console.log(response);
+          if(response.status===200){
+            return toast({
+              title: "Claim created successfully."
+            });
+          }
         })
         .catch((error) => {
-          console.log(error);
+          e.target.disabled=false;
+          return toast({
+            variant: "destructive",
+            title: "Something went wrong.",
+            description: error,
+          });
         });
     }
   };
   return (
     <div>
       <Navbar />
-
       <div
         className="font-bold text-center"
         style={{ marginRight: "40rem", marginTop: "2.5rem" }}
@@ -308,7 +319,7 @@ export default function page() {
           Submit
         </Button>
       </section>
-      {/* <Footer/> */}
+      <Footer/>
     </div>
   );
 }

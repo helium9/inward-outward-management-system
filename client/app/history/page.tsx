@@ -165,8 +165,8 @@ const Page: React.FC = () => {
 
   const handleFilterApply = async () => {
     try {
-      const payload = {...filterData, activePage:activePage, inward_date:date};
-      const response = await axios.post("/api/historyFilter", payload); // Send filter data to backend
+      const payload = {...filterData, activePage:activePage, inward_date:(date)?date:null};
+      const response = await axios.post("/api/historyFilter", payload, {params:{mode:'!new'}}); // Send filter data to backend
       setHistories(response.data); // Update state with filtered data
     } catch (error) {
       console.error("Error filtering histories:", error);

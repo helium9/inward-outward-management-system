@@ -7,13 +7,13 @@ import { getServerSession } from "next-auth";
 export async function GET(request: NextRequest) {
   const session = await getServerSession();
   const present = await prisma.employee.count({
-    where: { email: session.user.email },
+    where: { email: session.user.email, active: true },
   });
 
   if (present != 0) {
     const { isAdmin } = await prisma.employee.findFirst({
       select: { isAdmin: true },
-      where: { email: session.user.email },
+      where: { email: session.user.email, active: true },
     });
     const searchParams = request.nextUrl.searchParams;
     // console.log("user", searchParams);
@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
       const data = await prisma.employee.findFirst({
         where: {
           email: searchParams.get("email") as string,
+          active: true,
         },
       });
       // console.log("emp", data);
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
     } else if (isAdmin === true) {
       const email = searchParams.get("email");
       const data = await prisma.employee.findMany({
-        where: { email: { not: email as string } },
+        where: { email: { not: email as string }, active: true },
       });
       // console.log(data);
       return NextResponse.json(data, { status: 200 });

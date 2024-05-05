@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const activePage = searchParams.get("activePage");
   const session = await getServerSession();
   const _count = await prisma.employee.count({
-    where: { email: session?.user.email },
+    where: { email: session?.user.email, active:true },
   });
   // console.log("count ", _count);
   //   console.log(searchParams);

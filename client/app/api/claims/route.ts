@@ -8,13 +8,16 @@ export async function GET(request: NextRequest) {
   // console.log(searchParams);
   // const {email} = searchParams;
   const _count = await prisma.employee.count({
-    where: { email: searchParams.get("email") as string },
+    where: { email: searchParams.get("email") as string, active: true },
   });
   // console.log(_count);
   if (searchParams.get("condensed") === "true") {
     if (searchParams.get("status") === "new") {
       const data = await prisma.meta.findMany({
-        where: _count!==0?{ status: "new" }:{status:'new', origin:searchParams.get("email") as string},
+        where:
+          _count !== 0
+            ? { status: "new" }
+            : { status: "new", origin: searchParams.get("email") as string },
         orderBy: { issue_date: "desc" },
         select: { id: true, claimant_name: true, dept_name: true },
       });
@@ -56,7 +59,7 @@ export async function GET(request: NextRequest) {
   } else {
     // console.log(searchParams);
     const _count = await prisma.employee.count({
-      where: { email: searchParams.get("email") as string },
+      where: { email: searchParams.get("email") as string, active: true },
     });
     // console.log(_count);
     if (_count !== 0) {

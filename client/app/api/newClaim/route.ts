@@ -32,10 +32,11 @@ export async function POST(req: NextRequest) {
         status: "new",
       },
     });
-    console.log(newRecord);
+    // console.log(newRecord);
+    // await new Promise(r => setTimeout(r, 2000));
     return NextResponse.json({
       message: "Data stored successfully",
-      newRecord,
+      status:200,
     });
   } catch (error) {
     console.error("Error storing data:", error);

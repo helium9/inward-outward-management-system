@@ -23,10 +23,10 @@ async function main() {
   // }})
   //   const res = await prisma.employee.create({
   //   data:{
-
-  //     name     : "sup",
+  //     name     : "Aditya Kshitiz",
   //     email    : "adityakshitiz4@gmail.com",
-  //     isAdmin  : false
+  //     isAdmin  : true,
+  //     active:true
   // }})
   // const res = await prisma.history.findMany();
   // const res = await prisma.meta.findMany({orderBy:{issue_date:'desc'}, select: {claimant_name:true, dept_name:true}});
@@ -46,7 +46,14 @@ async function main() {
   //     meta_id: "9ae9f64d-67f4-4e83-aae3-e45dc1a399ab",
   //   },
   // });
-  const res=await prisma.meta.findMany({where: {origin:"cse220001004@iiti.ac.in"}});
+  // const res=await prisma.history.findMany({include:{meta_data:true}});
+  // const res = await prisma.history.findFirst({
+  //   where: {
+  //     time_stamp: { gte: new Date(time_stamp) },
+  //     meta_id: meta_id,
+  //   }
+  // })
+  const res = await prisma.employee.findMany();
   console.log(res);
 }
 

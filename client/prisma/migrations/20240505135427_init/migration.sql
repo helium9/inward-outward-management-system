@@ -24,6 +24,7 @@ CREATE TABLE "Employee" (
     "name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "isAdmin" BOOLEAN NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Employee_pkey" PRIMARY KEY ("id")
 );

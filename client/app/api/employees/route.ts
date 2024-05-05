@@ -9,6 +9,9 @@ export async function GET(request: NextRequest) {
       name: true,
       id: true,
     },
+    where:{
+      active:true
+    }
   });
   // console.log(histories);
   return NextResponse.json(employees, { status: 200 });

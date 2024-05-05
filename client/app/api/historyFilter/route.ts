@@ -17,18 +17,20 @@ interface FilterData {
   activePage: Number;
 }
 
-async function filterHistories(filterData: FilterData) {
+async function filterHistories(filterData: FilterData, mode: String) {
   const session = await getServerSession();
   const _count = await prisma.employee.count({
-    where: { email: session?.user.email },
+    where: { email: session?.user.email, active:true },
   });
-  // console.log(_count);
+  console.log(_count);
   // Construct Prisma query based on the filterData
+  const filter_query = _count === 0 ? { origin: session?.user.email } : {};
+  if(mode==='new')filter_query.status='new';
   const query = {
     skip: ((filterData.activePage as any) - 1) * 3,
     take: 3,
     where: {
-      meta_data: _count === 0 ? { origin: session?.user.email } : {},
+      meta_data: filter_query,
     },
     include: {
       meta_data: true,
@@ -99,13 +101,17 @@ async function filterHistories(filterData: FilterData) {
   }
 
   // Execute the Prisma query to fetch filtered histories
+  console.log(query);
   const filteredHistories = await prisma.history.findMany(query);
+  console.log(filterHistories);
   return filteredHistories;
 }
 
 export async function POST(req: NextRequest) {
   const filterData: FilterData = await req.json();
-  // console.log(filterData);
-  const filteredHistories = await filterHistories(filterData);
+  const searchParams = await req.nextUrl.searchParams;
+  console.log(searchParams);
+  console.log(filterData);
+  const filteredHistories = await filterHistories(filterData, searchParams.get('mode') as String);
   return NextResponse.json(filteredHistories);
 }

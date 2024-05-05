@@ -36,11 +36,11 @@ function Navbar() {
       <NavigationMenu className="hidden md:flex justify-self-center">
         <NavigationMenuList>
           <NavigationMenuItem>
-            <Link href="/" legacyBehavior passHref>
+            {/* <Link href="/" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Dashboard
               </NavigationMenuLink>
-            </Link>
+            </Link> */}
             <Link href="/claimList" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 All Claims

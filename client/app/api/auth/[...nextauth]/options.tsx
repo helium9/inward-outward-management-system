@@ -1,9 +1,8 @@
 import type { NextAuthOptions } from "next-auth";
-import { PrismaClient } from "@prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { Employee } from ".prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "../../../db/db";
 
 interface EmployeeWhereUniqueInput {
   id: string;
@@ -36,43 +35,39 @@ export const options: NextAuthOptions = {
       },
       async authorize(credentials) {
         // const connect = await mongoose.connect(connection.connection);
-        console.log("email :" , credentials?.email);
-        console.log("password :" , credentials?.password);
+        console.log("email :", credentials?.email);
+        console.log("password :", credentials?.password);
 
         try {
-            // Find user by username
+          // Find user by username
 
-            
-            // Assuming the Employee type is defined in your Prisma schema
-            const user: Employee | null = await prisma.employee.findFirst({
-              where: {
-                email: credentials?.email,
-              } as EmployeeWhereUniqueInput,
-            });
-            
-            
-            
-            console.log(user)
+          // Assuming the Employee type is defined in your Prisma schema
+          const user: Employee | null = await prisma.employee.findFirst({
+            where: {
+              email: credentials?.email,
+            } as EmployeeWhereUniqueInput,
+          });
 
-            if (!user) {
-                throw new Error('User not found');
-            }
+          console.log(user);
 
-            // Compare hashed password with provided password using bcrypt
-            // const passwordMatch = await bcrypt.compare(credentials.password, user.password);
+          if (!user) {
+            throw new Error("User not found");
+          }
 
-            if (credentials?.password !== process.env.password || !user.isAdmin) {
-                throw new Error('Invalid credentials');
-            }
+          // Compare hashed password with provided password using bcrypt
+          // const passwordMatch = await bcrypt.compare(credentials.password, user.password);
 
-            // If credentials are valid, return user
-            return user;
+          if (credentials?.password !== process.env.password || !user.isAdmin) {
+            throw new Error("Invalid credentials");
+          }
+
+          // If credentials are valid, return user
+          return user;
         } catch (error) {
           console.log(error);
-            throw error;
-        } 
-    }
-})
-
+          throw error;
+        }
+      },
+    }),
   ],
 };

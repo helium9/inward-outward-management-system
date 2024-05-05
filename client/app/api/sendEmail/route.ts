@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: "adityakshitiz4@gmail.com",
-    pass:process.env.EMAIL_APP_PASSWORD,
+    pass:"bvogttalqbuyecfb",
   },
 });
 
@@ -23,15 +23,16 @@ export async function POST(request: NextRequest) {
     subject: emailDetails.subject,
     text: emailDetails.body,
   };
-  // console.log(emailDetails);
-  // return NextResponse.json({status:200});
+  console.log(mailOptions);
   try{
     const info = await transporter.sendMail(mailOptions);
-    // throw error;
-    // console.log(info);
-    return NextResponse.json(info.response);
+    // await new Promise(r => setTimeout(r, 2000)); //simulate wait times to check button getting disabled during send.
+    console.log(info.response);
+    return NextResponse.json(info.response, {status:200});
+    // return NextResponse.json({headers:{date:"dummy"}, status:200});
   }
   catch(err){
-    return NextResponse.json({error:err});
+    console.log(err);
+    return NextResponse.json({error:err, status:400});
   } 
 }

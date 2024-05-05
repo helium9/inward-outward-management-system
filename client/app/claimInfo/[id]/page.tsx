@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import Footer from "@/components/Footer";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Select,
   SelectContent,
@@ -62,6 +63,17 @@ import {
   ArrowOutward,
 } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const filterLabels = {
   inward_number: "Invoice number",
@@ -99,24 +111,46 @@ const ClaimRow = ({
     stage: <AssignmentOutlined sx={{ fontSize: 40 }} />,
   };
   const icon = iconMap[action] || null;
+  const { toast } = useToast();
   const handleRevert = (dateTime: string, meta_id: string) => {
-    console.log(dateTime, meta_id);
+    // console.log("revert?", dateTime, meta_id);
     axios
       .post("http://localhost:3000/api/claimHistory", {
         mode: "delete",
         meta_id: meta_id,
         time_stamp: dateTime,
       })
-      .then((res) => console.log(res.data));
+      .then((res) => {
+        if(res.status===200){
+          return toast({
+            title: "Successfully deleted."
+          });
+        }
+      })
+      .catch((res) => {
+        // console.log(res);
+        return toast({
+          variant: "destructive",
+          title: "Something went wrong."
+        });
+      });
   };
+
   const [activePage, setActivePage] = useState(1);
   // console.log(activePage);
   const formatTimestamp = (dateTime: string): string => {
     const date = new Date(dateTime);
-    const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-    const formattedTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+    });
     return `${formattedDate} at ${formattedTime}`;
-  }; 
+  };
   //adding margin or padding in any table component doesn't work.
   return (
     <TableRow onClick={onClick}>
@@ -145,13 +179,33 @@ const ClaimRow = ({
       <TableCell>
         <div className="flex flex-col gap-2">
           <p>{formatTimestamp(dateTime)}</p>
-          {expanded && (
-            <button
-              onClick={() => handleRevert(dateTime, meta_id)}
-              className="w-fit"
-            >
-              <u>Revert Changes?</u>
-            </button>
+          {expanded && (action!=='inward') && (
+            <div className="mr-auto">
+              <AlertDialog>
+                <AlertDialogTrigger>
+                    <u>Revert Changes?</u>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This is delete all the
+                      actions history including and after this action.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleRevert(dateTime, meta_id)}
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           )}
         </div>
       </TableCell>
@@ -166,7 +220,7 @@ function Page({ params }: { params: { id: string } }) {
     amount: 0,
     claimant_name: "not available",
     dept_name: "not available",
-    origin:"not available",
+    origin: "not available",
     id: "not available",
     ind_name: "not available",
     inward_date: null,
@@ -179,29 +233,28 @@ function Page({ params }: { params: { id: string } }) {
   });
   const [historyData, setHistoryData] = useState([]);
   // console.log(claimData);
+
+  async function getData(sessionData: any, id: string) {
+    const claimInfo = await axios.get("http://localhost:3000/api/claims", {
+      params: {
+        ...sessionData,
+        id: id,
+      },
+    });
+    setClaimData(claimInfo.data);
+    //
+    // const historyInfo = await axios.get(
+    //   "http://localhost:3000/api/claimHistory",
+    //   { params: { meta_id: id } }
+    // );
+    // setHistoryData(historyInfo.data);
+    //
+    const empList = await axios.get("http://localhost:3000/api/employees");
+    setEmployees(empList.data);
+  }
   useEffect(() => {
     // console.log(params.id);
     // console.log(session);
-
-    async function getData(sessionData: any, id: string) {
-      const claimInfo = await axios.get("http://localhost:3000/api/claims", {
-        params: {
-          ...sessionData,
-          id: id,
-        },
-      });
-      setClaimData(claimInfo.data);
-      //
-      // const historyInfo = await axios.get(
-      //   "http://localhost:3000/api/claimHistory",
-      //   { params: { meta_id: id } }
-      // );
-      // setHistoryData(historyInfo.data);
-      //
-      const empList = await axios.get("http://localhost:3000/api/employees");
-      setEmployees(empList.data);
-    }
-
     if (session && status === "authenticated")
       getData(session?.user, params.id);
   }, [session]);
@@ -274,18 +327,36 @@ function Page({ params }: { params: { id: string } }) {
         meta_id: params.id,
         ...actionTaken,
       })
-      .then((res) => console.log(res.data));
+      .then((res) =>getPagination());
   };
-  
+
   useEffect(() => {
     getPagination();
-  }, [activePage]); 
-
-  const handleSendMail = () => {
+  }, [activePage]);
+  const { toast } = useToast();
+  const handleSendMail = (event) => {
+    event.currentTarget.disabled = true;
     console.log(emailDetails);
     axios
       .post("http://localhost:3000/api/sendEmail", emailDetails)
-      .then((res) => console.log(res));
+      .then((res) => {
+        console.log(res);
+        event.target.disabled = false;
+        if (res.status === 200) {
+          return toast({
+            title: "Email sent successfully.",
+            description: res.headers.date as String,
+          });
+        }
+      })
+      .catch((res) => {
+        console.log(res);
+        return toast({
+          variant: "destructive",
+          title: "Something went wrong.",
+          description: "There was a problem sending the email.",
+        });
+      });
   };
   return (
     <div>
@@ -512,7 +583,7 @@ function Page({ params }: { params: { id: string } }) {
                   <Button
                     type="button"
                     variant="secondary"
-                    onClick={handleSendMail}
+                    onClick={(e) => handleSendMail(e)}
                   >
                     Send Mail
                   </Button>

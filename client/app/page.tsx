@@ -6,6 +6,17 @@ import { Input } from "@nextui-org/react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Table,
   TableBody,
   TableCaption,
@@ -53,6 +64,7 @@ import {
   ArrowOutward,
   AddCircleOutlineOutlined,
 } from "@mui/icons-material";
+import { useToast } from "@/components/ui/use-toast";
 
 const filterLabels = {
   inward_number: "Invoice number",
@@ -68,6 +80,7 @@ const filterLabels = {
 };
 
 export default function Home() {
+  const { toast } = useToast();
   const { data: session, status } = useSession();
   const [userInfo, setUserInfo] = useState<{
     name: string | null | undefined;
@@ -131,7 +144,7 @@ export default function Home() {
     if (session && status === "authenticated") {
       getUser(session?.user).then((res) => {
         console.log(res);
-        if (res.length===0) {
+        if (res.length === 0) {
           console.log(session);
           setUserInfo({
             name: session.user?.name,
@@ -182,16 +195,56 @@ export default function Home() {
     name: "",
     email: "",
   });
-  const handleNewEmployeeAdd = (add: Number) => {
+  const handleNewEmployeeAdd = (event, add: Number) => {
     console.log(newEmployeeDetails);
+    event.currentTarget.disabled = true;
     axios
       .post("http://localhost:3000/api/newEmployee", {
         mode: add ? "add" : "del",
         ...newEmployeeDetails,
       })
-      .then((res) => console.log(res));
+      .then((res) => {
+        if (res.status === 200) {
+          event.target.disabled = false;
+          return toast({
+            title: "Successfully Added. Refresh page",
+          });
+        }
+      })
+      .catch((res) => {
+        // console.log(res);
+        event.target.disabled = false;
+        return toast({
+          variant: "destructive",
+          title: "Something went wrong.",
+        });
+      });
   };
   // console.log(users);
+  const [employeeExpanded, setEmployeeExpanded] = useState(-1);
+  console.log(users);
+  const removeEmployee = async (emp_id: String) => {
+    console.log(emp_id);
+    axios
+      .post("http://localhost:3000/api/newEmployee", {
+        mode: "del",
+        emp_id: emp_id,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          return toast({
+            title: "Successfully removed. Refresh page",
+          });
+        }
+      })
+      .catch((res) => {
+        // console.log(res);
+        return toast({
+          variant: "destructive",
+          title: "Something went wrong.",
+        });
+      });
+  };
   return (
     <div>
       <Navbar />
@@ -273,24 +326,28 @@ export default function Home() {
           </ListClaimWrapper>
 
           <div>
-              <ListClaimWrapper
-                title={(userInfo.type !== "Claimant")?"Incoming Claims":"Pending Claims"}
-                linkAddress="/incomingClaims"
-                condensed={true}
-              >
-                {newClaims &&
-                  newClaims.map((claim, ind) => (
-                    <ClaimWrapper
-                      key={ind}
-                      type={"new"}
-                      name={claim.claimant_name as string}
-                      info={claim.dept_name as string}
-                      action={null}
-                      meta_id={claim.meta_id}
-                    />
-                  ))}
-              </ListClaimWrapper>
-            </div>
+            <ListClaimWrapper
+              title={
+                userInfo.type !== "Claimant"
+                  ? "Incoming Claims"
+                  : "Pending Claims"
+              }
+              linkAddress="/incomingClaims"
+              condensed={true}
+            >
+              {newClaims &&
+                newClaims.map((claim, ind) => (
+                  <ClaimWrapper
+                    key={ind}
+                    type={"new"}
+                    name={claim.claimant_name as string}
+                    info={claim.dept_name as string}
+                    action={null}
+                    meta_id={claim.id}
+                  />
+                ))}
+            </ListClaimWrapper>
+          </div>
         </section>
         {userInfo.type === "Admin" && (
           <section className="mt-14">
@@ -379,7 +436,7 @@ export default function Home() {
                     <DialogFooter>
                       <Button
                         type="submit"
-                        onClick={() => handleNewEmployeeAdd(1)}
+                        onClick={(e) => handleNewEmployeeAdd(e, 1)}
                       >
                         Save changes
                       </Button>
@@ -414,7 +471,10 @@ export default function Home() {
                     Array.isArray(users) &&
                     users.map((item, ind) => {
                       return (
-                        <TableRow key={ind}>
+                        <TableRow
+                          key={ind}
+                          onClick={() => setEmployeeExpanded(ind)}
+                        >
                           <TableCell className="font-medium">
                             <div className="ml-6 my-2">
                               <div className="flex flex-row items-center">
@@ -428,6 +488,38 @@ export default function Home() {
                           <TableCell>
                             <div className="flex flex-row gap-6">
                               {item?.email}
+                              {ind === employeeExpanded && (
+                                <div className="ml-auto">
+                                  <AlertDialog>
+                                    <AlertDialogTrigger>
+                                      <u>Remove employee?</u>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                          Are you absolutely sure?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          This action cannot be undone. This
+                                          will remove the employee.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                          Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                          onClick={() =>
+                                            removeEmployee(item?.id)
+                                          }
+                                        >
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              )}
                             </div>
                           </TableCell>
                         </TableRow>

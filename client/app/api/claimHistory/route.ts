@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
   // console.log(data);
   if (data !== null) {
     if (data.mode === "add") {
+      console.log("data: ", data);
       const {meta_id, employee_id, remarks, action} = data;
       const upload = await prisma.history.create({ data:{meta_id:meta_id, employee_id:employee_id, action:action, remarks:remarks}});
       const update = await prisma.meta.update({
@@ -49,7 +50,24 @@ export async function POST(request: NextRequest) {
           meta_id: meta_id,
         },
       });
-      //write code to update the meta data to latest history after deletion.
+      // await new Promise(r => setTimeout(r, 2000));
+      // console.log("delete ;>{");
+
+      //write code to update the meta data to latest history after deletion. (only status and alloted?)
+      const latestHistory = await prisma.history.findFirst({
+        where: {
+          time_stamp: { lte: new Date(time_stamp) },
+          meta_id: meta_id,
+        },
+        orderBy:{
+          time_stamp:'desc'
+        }
+      })
+      console.log(latestHistory);
+      const update = await prisma.meta.update({
+        where: { id: meta_id },
+        data: { status: latestHistory?.action, alloted_to_id: latestHistory?.employee_id },
+      });
     }
     return NextResponse.json("success", { status: 200 });
   }

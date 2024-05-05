@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   //   }
   //   return NextResponse.json(data, { status: 200 });
   // } else {
-  const _count = await prisma.employee.count({ where: {email:session?.user.email} });
+  const _count = await prisma.employee.count({ where: {email:session?.user.email}, active:true });
   // console.log(_count);
   const histories = await prisma.history.findMany({
     skip: ((activePage as any) - 1) * 3,

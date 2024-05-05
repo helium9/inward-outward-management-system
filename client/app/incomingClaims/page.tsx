@@ -74,6 +74,7 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
   inwardNumber,
   amount,
   advancedReq,
+  inwardDate,
   id,
 }) => {
   const iconMap = {
@@ -89,7 +90,7 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
   const paymentTo = partyName !== 'none' ? partyName : claimantName;
   const advanced_Req = advancedReq ? 'YES' : 'NO';
   const Amount = `${amount}`;
-  const IssueDate = new Date(issueDate);  
+  const IssueDate = new Date(inwardDate);  
   const Issue_Date = IssueDate.toISOString().split('T')[0];
 
   return (
@@ -158,7 +159,10 @@ const Page: React.FC = () => {
 
   const handleFilterApply = async () => {
     try {
-      const response = await axios.post('/api/historyFilter', filterData); // Send filter data to backend
+      // const payload = {...filterData, activePage:activePage, inward_date:(date)?date:null};
+      // const response = await axios.post('/api/historyFilter', payload, {params:{mode:'new'}}); // Send filter data to backend
+      const response = await axios.get('/api/incomingClaims', {params:{mode:'new', activePage:activePage}});
+      console.log(response.data);
       setData(response.data); // Update state with filtered data
     } catch (error) {
       console.error('Error filtering histories:', error);
@@ -187,17 +191,21 @@ const Page: React.FC = () => {
   const [activePage, setActivePage] = useState(1);
 
   useEffect(() => {
-    fetchData();
+    handleFilterApply();
+  }, []);
+
+  useEffect(() => {
+    handleFilterApply();
   }, [activePage]);
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('/api/incomingClaims', { params: { activePage: activePage }});
-      setData(response.data);
-    } catch (error) {
-      console.error('Error fetching histories:', error);
-    }
-  };
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await axios.get('/api/incomingClaims', { params: { activePage: activePage }});
+  //     setData(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching histories:', error);
+  //   }
+  // };
 
   const filteredData = data.filter((ele) => {
     const searchTermLower = searchTerm.toLowerCase();
@@ -277,7 +285,7 @@ const Page: React.FC = () => {
                   partyName={ele.party_name}
                   claimantName={ele.claimant_name}
                   inwardNumber={ele.inward_number}
-                  issueDate={ele.issue_date}
+                  inwardDate={ele.inward_date}
                   advancedReq = {ele.advanced_req}
                   amount = {ele.amount}
                   id = {ele.id}

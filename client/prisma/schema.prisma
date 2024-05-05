@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// datasource db {
+//   provider  = "postgresql"
+//   url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+//   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+// }
+
 model Meta {
   id            String    @id @default(uuid())
   origin        String
@@ -21,7 +27,7 @@ model Meta {
   inward_date   DateTime?
   ind_name      String    @db.VarChar(255)
   dept_name     String    @db.VarChar(255)
-  party_name    String    @db.VarChar(255)    
+  party_name    String    @db.VarChar(255)
   claimant_name String    @db.VarChar(255)
   subject       String?   @db.VarChar(255)
   amount        Int
@@ -37,6 +43,7 @@ model Employee {
   name     String    @db.VarChar(255)
   email    String    @db.VarChar(255)
   isAdmin  Boolean
+  active   Boolean   @default(false)
   managing Meta[]
   history  History[]
 }
