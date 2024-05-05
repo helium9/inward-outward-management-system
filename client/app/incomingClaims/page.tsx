@@ -1,8 +1,8 @@
-'use client';
-import Link from 'next/link';
+"use client";
+import Link from "next/link";
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "@/components/Navbar";
 import {
   Table,
@@ -45,7 +45,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {  LastPage, FirstPage } from "@mui/icons-material";
+import { LastPage, FirstPage } from "@mui/icons-material";
 import FilterDialog from "@/components/FilterDialog";
 
 interface ClaimRowProps {
@@ -55,7 +55,7 @@ interface ClaimRowProps {
   partyName: string;
   claimantName: string;
   inwardNumber: number;
-  inwardDate : Date;
+  inwardDate: Date;
   amount: number;
   advancedReq: boolean;
   lastAction: string;
@@ -64,12 +64,12 @@ interface ClaimRowProps {
   actionTimestamp: string;
 }
 
-
 const ClaimRow: React.FC<ClaimRowProps> = ({
   type,
   indName,
   deptName,
   partyName,
+  issueDate,
   claimantName,
   inwardNumber,
   amount,
@@ -79,19 +79,19 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
 }) => {
   const iconMap = {
     forward: <ContentPasteGoOutlined sx={{ fontSize: 36, marginRight: 0.5 }} />,
-    outward: <TaskOutlined sx={{ fontSize: 40 }} />,
+    payment: <TaskOutlined sx={{ fontSize: 40 }} />,
     inward: <FileOpenOutlined sx={{ fontSize: 40 }} />,
     new: <PostAddOutlined sx={{ fontSize: 40 }} />,
-    stage: <AssignmentOutlined sx={{ fontSize: 40 }} />,
+    outward: <AssignmentOutlined sx={{ fontSize: 40 }} />,
   };
   const icon = iconMap[type] || null;
   const info = `${deptName}`;
   const invoice_details = `${inwardNumber}`;
-  const paymentTo = partyName !== 'none' ? partyName : claimantName;
-  const advanced_Req = advancedReq ? 'YES' : 'NO';
+  const paymentTo = partyName !== "none" ? partyName : claimantName;
+  const advanced_Req = advancedReq ? "YES" : "NO";
   const Amount = `${amount}`;
-  const IssueDate = new Date(inwardDate);  
-  const Issue_Date = IssueDate.toISOString().split('T')[0];
+  const IssueDate = new Date(inwardDate);
+  const Issue_Date = IssueDate.toISOString().split("T")[0];
 
   return (
     <TableRow>
@@ -100,9 +100,9 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
           <div className="flex flex-row items-center">
             {icon}
             <div className="flex flex-col ml-2 font-semibold">
-              <Link href={`/claimInfo/${id}`} >
-              <p>{indName}</p>
-              <p className="text-zinc-500">{info}</p>
+              <Link href={`/claimInfo/${id}`}>
+                <p>{indName}</p>
+                <p className="text-zinc-500">{info}</p>
               </Link>
             </div>
           </div>
@@ -128,20 +128,19 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
 };
 
 const filterLabels = {
-  inward_number:"Invoice number",
+  inward_number: "Invoice number",
   inward_date: "Inward Date",
-  ind_name:"Indentor name",
-  dept_name:"Department name",
-  party_name:"Party name",
-  claimant_name:"Claimant name",
-  subject:"Subject",
-  amount:"Amount",
-  status:"Status",
-  alloted_to_name:"Alloted to"
-}
+  ind_name: "Indentor name",
+  dept_name: "Department name",
+  party_name: "Party name",
+  claimant_name: "Claimant name",
+  subject: "Subject",
+  amount: "Amount",
+  status: "Status",
+  alloted_to_name: "Alloted to",
+};
 
 const Page: React.FC = () => {
-  
   const [date, setDate] = React.useState<Date>(); //date from filter options
   const [filterData, setFilterData] = useState({
     //state of selected filters
@@ -161,14 +160,16 @@ const Page: React.FC = () => {
     try {
       // const payload = {...filterData, activePage:activePage, inward_date:(date)?date:null};
       // const response = await axios.post('/api/historyFilter', payload, {params:{mode:'new'}}); // Send filter data to backend
-      const response = await axios.get('/api/incomingClaims', {params:{mode:'new', activePage:activePage}});
+      const response = await axios.get("/api/incomingClaims", {
+        params: { mode: "new", activePage: activePage },
+      }); //filter currently not implemented
       console.log(response.data);
       setData(response.data); // Update state with filtered data
     } catch (error) {
-      console.error('Error filtering histories:', error);
+      console.error("Error filtering histories:", error);
     }
   };
-  
+
   const handleFilterClear = () => {
     setFilterData({
       //state of selected filters
@@ -187,7 +188,7 @@ const Page: React.FC = () => {
   };
 
   const [data, setData] = useState<ClaimRowProps[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [activePage, setActivePage] = useState(1);
 
   useEffect(() => {
@@ -217,7 +218,7 @@ const Page: React.FC = () => {
     // const issueData = new Date(ele.issue_date);
     // const advReq = ele.advanced_req.toLowerCase();
     // const amount = ele.amount.toLowerCase();
-  
+
     return (
       inwardNumber.includes(searchTermLower) ||
       indName.includes(searchTermLower) ||
@@ -229,16 +230,15 @@ const Page: React.FC = () => {
       // amount.includes(searchTermLower)
     );
   });
-  
+
   return (
     <div>
-      <Navbar/>
-    <main className="p-2 px-4 sm:px-10 xl:px-24">
-      <div className="my-4 flex flex-row items-center">
-        <p className="text-3xl font-bold">Incoming Claims</p>
-        <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
-          
-          <FilterDialog
+      <Navbar />
+      <main className="p-2 px-4 sm:px-10 xl:px-24">
+        <div className="my-4 flex flex-row items-center">
+          <p className="text-3xl font-bold">Incoming Claims</p>
+          <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
+            {/* <FilterDialog
             date={date}
             setDate={setDate}
             filterData={filterData}
@@ -246,37 +246,37 @@ const Page: React.FC = () => {
             handleFilterApply={handleFilterApply}
             handleFilterClear={handleFilterClear}
             labels={filterLabels}
-          />
-          <Input
-            size="sm"
-            variant="bordered"
-            classNames={{
-              base: `m-0`,
-              inputWrapper: "rounded border-zinc-200 border",
-            }}
-            placeholder={`Search`}
-            startContent={<Search sx={{ color: "#999999" }} />}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          /> */}
+            <Input
+              size="sm"
+              variant="bordered"
+              classNames={{
+                base: `m-0`,
+                inputWrapper: "rounded border-zinc-200 border",
+              }}
+              placeholder={`Search`}
+              startContent={<Search sx={{ color: "#999999" }} />}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
-      <div className="rounded-md border border-zinc-300">
-        <Table>
-          <TableHeader>
-            <TableRow className="text-zinc-500 font-semibold text-center">
-              <TableHead className="w-56">
-                <p className="ml-6">Indentor Details</p>
-              </TableHead>
-              <TableHead className="ml-6">Recipient</TableHead>
-              <TableHead className="ml-6">Invoice Number</TableHead>
-              <TableHead className="ml-6">Issue Date</TableHead>
-              <TableHead className="ml-6">Advanced Request</TableHead>
-              <TableHead className="ml-6">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-          {filteredData.map((ele, index) => (
+        <div className="rounded-md border border-zinc-300">
+          <Table>
+            <TableHeader>
+              <TableRow className="text-zinc-500 font-semibold text-center">
+                <TableHead className="w-56">
+                  <p className="ml-6">Indentor Details</p>
+                </TableHead>
+                <TableHead className="ml-6">Recipient</TableHead>
+                <TableHead className="ml-6">Invoice Number</TableHead>
+                <TableHead className="ml-6">Issue Date</TableHead>
+                <TableHead className="ml-6">Advanced Request</TableHead>
+                <TableHead className="ml-6">Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredData.map((ele, index) => (
                 <ClaimRow
                   key={index}
                   type={ele.action}
@@ -286,15 +286,15 @@ const Page: React.FC = () => {
                   claimantName={ele.claimant_name}
                   inwardNumber={ele.inward_number}
                   inwardDate={ele.inward_date}
-                  advancedReq = {ele.advanced_req}
-                  amount = {ele.amount}
-                  id = {ele.id}
+                  advancedReq={ele.advanced_req}
+                  amount={ele.amount}
+                  id={ele.id}
                 />
               ))}
-        </TableBody>
-        </Table>
-      </div>
-      <section className="my-4">
+            </TableBody>
+          </Table>
+        </div>
+        <section className="my-4">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -360,9 +360,9 @@ const Page: React.FC = () => {
             </PaginationContent>
           </Pagination>
         </section>
-    </main>
+      </main>
     </div>
   );
 };
 
-export default Page; 
+export default Page;

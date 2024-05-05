@@ -9,13 +9,13 @@ export async function GET(request: NextRequest) {
   // console.log("hi");
   const meta_id = searchParams.get("meta_id");
   const activePage = searchParams.get("activePage");
-  console.log("active :",activePage);
+  console.log("active :", activePage);
   if (meta_id !== null) {
     const histories = await prisma.history.findMany({
-      skip : ((activePage as any) -1)*3,
-      take : 3,
+      skip: ((activePage as any) - 1) * 3,
+      take: 3,
       select: {
-        meta_id:true,
+        meta_id: true,
         remarks: true,
         action: true,
         time_stamp: true,
@@ -36,8 +36,22 @@ export async function POST(request: NextRequest) {
   if (data !== null) {
     if (data.mode === "add") {
       console.log("data: ", data);
-      const {meta_id, employee_id, remarks, action} = data;
-      const upload = await prisma.history.create({ data:{meta_id:meta_id, employee_id:employee_id, action:action, remarks:remarks}});
+      let { meta_id, employee_id, remarks, action } = data;
+      if (employee_id === "") {
+        const id = await prisma.employee.findFirst({
+          where: { isAdmin: true },
+          select: { id: true },
+        });
+        employee_id = id?.id;
+      }
+      const upload = await prisma.history.create({
+        data: {
+          meta_id: meta_id,
+          employee_id: employee_id,
+          action: action,
+          remarks: remarks,
+        },
+      });
       const update = await prisma.meta.update({
         where: { id: meta_id },
         data: { status: action, alloted_to_id: employee_id },
@@ -59,14 +73,17 @@ export async function POST(request: NextRequest) {
           time_stamp: { lte: new Date(time_stamp) },
           meta_id: meta_id,
         },
-        orderBy:{
-          time_stamp:'desc'
-        }
-      })
+        orderBy: {
+          time_stamp: "desc",
+        },
+      });
       console.log(latestHistory);
       const update = await prisma.meta.update({
         where: { id: meta_id },
-        data: { status: latestHistory?.action, alloted_to_id: latestHistory?.employee_id },
+        data: {
+          status: latestHistory?.action,
+          alloted_to_id: latestHistory?.employee_id,
+        },
       });
     }
     return NextResponse.json("success", { status: 200 });

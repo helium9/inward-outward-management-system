@@ -20,8 +20,8 @@ interface FilterData {
 async function filterHistories(filterData: FilterData) {
   const session = await getServerSession();
   const _count = await prisma.employee.count({
-    where: { email: session?.user.email },
-    active:true
+    where: { email: session?.user.email, active:true }
+    
   });
   const query = {
     skip: ((filterData.activePage as any) - 1) * 3,

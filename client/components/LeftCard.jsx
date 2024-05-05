@@ -2,21 +2,13 @@ import React from "react";
 import RightStatus from "@/components/RightStatus";
 import LeftStatus from "@/components/LeftStatus";
 
-export default function LeftCard({ data, employees }) {
-
-  const findEmployeeById = (employeeId) => {
-    return employees.find((employee) => employee.id === employeeId);
-  };
-
-  const employeeData = data.employee_id
-    ? findEmployeeById(data.employee_id)
-    : null;
+export default function LeftCard({ data ,prevData }) {
 
   return (
     <div>
       <div className="!grid !grid-cols-[auto_100px_auto]">
         <div className="border-0 border-red-500 flex justify-center">
-          <LeftStatus heading={data} employee={employeeData} />
+          <LeftStatus heading={data} prevEmpl={prevData}/>
         </div>
         <div
           id="center"
@@ -34,7 +26,7 @@ export default function LeftCard({ data, employees }) {
           className="border-0 border-red-500 flex justify-center"
           style={{ visibility: "hidden" }}
         >
-          <RightStatus heading={data} employee={employeeData} />
+          <RightStatus heading={data} prevEmpl={prevData}/>
         </div>
       </div>
     </div>

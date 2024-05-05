@@ -143,8 +143,8 @@ export default function Home() {
     }
     if (session && status === "authenticated") {
       getUser(session?.user).then((res) => {
-        console.log(res);
-        if (res.length === 0) {
+        console.log("res", res);
+        if (res.type === "Claimant") {
           console.log(session);
           setUserInfo({
             name: session.user?.name,
@@ -247,7 +247,7 @@ export default function Home() {
   };
   return (
     <div>
-      <Navbar />
+      <Navbar type={userInfo.type as String}/>
       <main className="p-2 px-4 sm:px-10 xl:px-24">
         <div className="text-3xl font-extrabold my-4">Dashboard</div>
         <section className="flex flex-col lg:flex-row gap-4">
@@ -295,10 +295,10 @@ export default function Home() {
                 {userInfo.email ? userInfo.email : "unknown"}
               </div>
             </CardContent>
-            <CardFooter className="flex flex-row gap-4 text-zinc-500 text-xs">
+            {/* <CardFooter className="flex flex-row gap-4 text-zinc-500 text-xs">
               <p>Change Password?</p>
               <p>Profile Settings</p>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </section>
 
@@ -354,25 +354,7 @@ export default function Home() {
             <div className="my-4 flex flex-row items-center">
               <p className="text-2xl font-bold">Registered Employees</p>
               <div className="flex flex-row w-full ml-auto gap-3 max-w-unit-8xl">
-                {/* <div className="flex items-center min-w-40 space-x-2">
-                <Checkbox id="terms" />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Show current user
-                </label>
-              </div> */}
-                {/* <FilterDialog
-                date={date}
-                setDate={setDate}
-                filterData={filterData}
-                setFilterData={setFilterData}
-                handleFilterApply={handleFilterApply}
-                handleFilterClear={handleFilterClear}
-                labels={filterLabels}
-              /> */}
-
+                
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button

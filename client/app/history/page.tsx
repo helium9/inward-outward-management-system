@@ -82,10 +82,10 @@ const ClaimRow: React.FC<ClaimRowProps> = ({
 }) => {
   const iconMap = {
     forward: <ContentPasteGoOutlined sx={{ fontSize: 36, marginRight: 0.5 }} />,
-    outward: <TaskOutlined sx={{ fontSize: 40 }} />,
+    payment: <TaskOutlined sx={{ fontSize: 40 }} />,
     inward: <FileOpenOutlined sx={{ fontSize: 40 }} />,
     new: <PostAddOutlined sx={{ fontSize: 40 }} />,
-    stage: <AssignmentOutlined sx={{ fontSize: 40 }} />,
+    outward: <AssignmentOutlined sx={{ fontSize: 40 }} />,
   };
   const icon = iconMap[type] || null;
   const info = `${deptName}`;

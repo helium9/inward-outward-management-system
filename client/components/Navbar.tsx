@@ -25,7 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-function Navbar() {
+function Navbar({type=""}:{type:String}) {
   return (
     <div className="grid grid-cols-3 justify-between border-zinc-200 p-4 border-b-2">
       <div className="flex items-center">
@@ -48,7 +48,7 @@ function Navbar() {
             </Link>
             <Link href="/incomingClaims" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Incoming Claims
+                {(type==='Claimant')?"Pending Claims":"Incoming Claims"}
               </NavigationMenuLink>
             </Link>
             <Link href="/history" legacyBehavior passHref>

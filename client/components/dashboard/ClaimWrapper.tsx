@@ -28,10 +28,10 @@ const ClaimWrapper = ({
   //the action attribute in history must match the defined action type
   const iconMap: any = {
     forward: <ContentPasteGoOutlined sx={{ fontSize: 36, marginRight: 0.5 }} />,
-    outward: <TaskOutlined sx={{ fontSize: 40 }} />,
+    payment: <TaskOutlined sx={{ fontSize: 40 }} />,
     inward: <FileOpenOutlined sx={{ fontSize: 38 }} />,
     new: <PostAddOutlined sx={{ fontSize: 40 }} />,
-    stage: <AssignmentOutlined sx={{ fontSize: 40 }} />,
+    outward: <AssignmentOutlined sx={{ fontSize: 40 }} />,
   };
   const icon = iconMap[type] || null;
 

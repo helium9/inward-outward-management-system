@@ -53,7 +53,7 @@ async function main() {
   //     meta_id: meta_id,
   //   }
   // })
-  const res = await prisma.employee.findMany();
+  const res = await prisma.meta.findMany();
   console.log(res);
 }
 
