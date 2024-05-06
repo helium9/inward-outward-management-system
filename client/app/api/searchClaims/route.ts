@@ -1,12 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { prisma } from "../../db/db";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { searchTerm } = req.query;
-
+export async function GET(request: NextRequest){
+  const searchTerm = request.nextUrl.searchParams.get("searchTerm");
   try {
     const filteredClaims = await prisma.meta.findMany({
       where: {
@@ -24,9 +21,9 @@ export default async function handler(
       },
     });
 
-    res.status(200).json(filteredClaims);
+    return NextResponse.json(filteredClaims, {status:200});
   } catch (error) {
     console.error('Error searching claims:', error);
-    res.status(500).json({ message: 'Error searching claims' });
+    return NextResponse.json({ message: 'Error searching claims', status:500 });
   }
 }

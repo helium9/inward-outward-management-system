@@ -31,7 +31,7 @@ import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { redirect } from 'next/navigation';
 
-export default function page() {
+export default function Page() {
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     inward_number: "",
