@@ -21,13 +21,13 @@ async function main() {
   //     remarks: 'done. verified.',
   //     employee_id: '69bd5382-f951-40a8-9c19-4fc5835eb76e'
   // }})
-  //   const res = await prisma.employee.create({
-  //   data:{
-  //     name     : "Aditya Kshitiz",
-  //     email    : "adityakshitiz4@gmail.com",
-  //     isAdmin  : true,
-  //     active:true
-  // }})
+    const res = await prisma.employee.create({
+    data:{
+      name     : "Natural Star",
+      email    : "admin@admin.com",
+      isAdmin  : true,
+      active:true
+  }})
   // const res = await prisma.history.findMany();
   // const res = await prisma.meta.findMany({orderBy:{issue_date:'desc'}, select: {claimant_name:true, dept_name:true}});
   // const res = await prisma.meta.update({
@@ -53,7 +53,7 @@ async function main() {
   //     meta_id: meta_id,
   //   }
   // })
-  const res = await prisma.meta.findMany();
+  // const res = await prisma.meta.findMany();
   console.log(res);
 }
 
