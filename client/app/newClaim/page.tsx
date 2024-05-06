@@ -62,7 +62,7 @@ export default function page() {
     console.log(formData);
     if (session && status === "authenticated") {
       axios
-        .post("http://localhost:3000/api/newClaim", {
+        .post("/api/newClaim", {
           origin: session?.user?.email,
           inward_number: Number(formData.inward_number),
           issue_date: formData.issue_date,

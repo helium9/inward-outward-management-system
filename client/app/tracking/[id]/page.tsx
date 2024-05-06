@@ -18,7 +18,7 @@ const Page = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/tracking/history/?meta_id=${id}`
+          `/api/tracking/history/?meta_id=${id}`
         );
         const responseData = await response.json();
         // console.log(responseData);

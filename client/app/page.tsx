@@ -96,7 +96,7 @@ export default function Home() {
   useEffect(() => {
     async function getUser(data: any) {
       //define type later on
-      const res = await axios.get("http://localhost:3000/api/getUser", {
+      const res = await axios.get("/api/getUser", {
         params: {
           ...data,
           mode: "curr",
@@ -107,7 +107,7 @@ export default function Home() {
     }
 
     async function getDB(sessionData: any) {
-      const newClaimData = await axios.get("http://localhost:3000/api/claims", {
+      const newClaimData = await axios.get("/api/claims", {
         params: {
           ...sessionData,
           condensed: true,
@@ -116,7 +116,7 @@ export default function Home() {
       });
       setNewClaims(newClaimData.data);
 
-      const currHistory = await axios.get("http://localhost:3000/api/history", {
+      const currHistory = await axios.get("/api/history", {
         params: {
           ...sessionData,
           condensed: true,
@@ -124,7 +124,7 @@ export default function Home() {
       });
       setHistory(currHistory.data);
 
-      const currClaims = await axios.get("http://localhost:3000/api/claims", {
+      const currClaims = await axios.get("/api/claims", {
         params: {
           ...sessionData,
           condensed: true,
@@ -133,7 +133,7 @@ export default function Home() {
       });
       setClaimData(currClaims.data);
 
-      const res = await axios.get("http://localhost:3000/api/getUser", {
+      const res = await axios.get("/api/getUser", {
         params: {
           ...sessionData,
           mode: "all",
@@ -199,7 +199,7 @@ export default function Home() {
     console.log(newEmployeeDetails);
     event.currentTarget.disabled = true;
     axios
-      .post("http://localhost:3000/api/newEmployee", {
+      .post("/api/newEmployee", {
         mode: add ? "add" : "del",
         ...newEmployeeDetails,
       })
@@ -226,7 +226,7 @@ export default function Home() {
   const removeEmployee = async (emp_id: String) => {
     console.log(emp_id);
     axios
-      .post("http://localhost:3000/api/newEmployee", {
+      .post("/api/newEmployee", {
         mode: "del",
         emp_id: emp_id,
       })

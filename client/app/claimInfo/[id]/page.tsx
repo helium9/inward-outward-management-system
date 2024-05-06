@@ -125,7 +125,7 @@ const ClaimRow = ({
   const handleRevert = (dateTime: string, meta_id: string) => {
     // console.log("revert?", dateTime, meta_id);
     axios
-      .post("http://localhost:3000/api/claimHistory", {
+      .post("/api/claimHistory", {
         mode: "delete",
         meta_id: meta_id,
         time_stamp: dateTime,
@@ -273,7 +273,7 @@ function Page({ params }: { params: { id: string } }) {
   // console.log(claimData);
 
   async function getData(sessionData: any, id: string) {
-    const res = await axios.get("http://localhost:3000/api/getUser", {
+    const res = await axios.get("/api/getUser", {
       params: {
         ...sessionData,
         mode: "curr",
@@ -281,7 +281,7 @@ function Page({ params }: { params: { id: string } }) {
     });
     setUserType(res.data.type);
     if (res.data.type !== "Claimant") {
-      const claimInfo = await axios.get("http://localhost:3000/api/claims", {
+      const claimInfo = await axios.get("/api/claims", {
         params: {
           ...sessionData,
           id: id,
@@ -296,7 +296,7 @@ function Page({ params }: { params: { id: string } }) {
       // setHistoryData(historyInfo.data);
       //
       const completeClaimInfo = await axios.get(
-        "http://localhost:3000/api/editClaim",
+        "/api/editClaim",
         {
           params: {
             ...sessionData,
@@ -306,7 +306,7 @@ function Page({ params }: { params: { id: string } }) {
       );
       // console.log(claimInfo.data)
       setCompleteClaimData(completeClaimInfo.data);
-      const empList = await axios.get("http://localhost:3000/api/employees");
+      const empList = await axios.get("/api/employees");
       setEmployees(empList.data);
     }
   }
@@ -326,7 +326,7 @@ function Page({ params }: { params: { id: string } }) {
       };
 
       console.log("Updated: ", updatedClaimData);
-      axios.put("http://localhost:3000/api/editClaim", updatedClaimData);
+      axios.put("/api/editClaim", updatedClaimData);
 
       // Update the claimData state with the edited data
       setCompleteClaimData(updatedClaimData);
@@ -340,7 +340,7 @@ function Page({ params }: { params: { id: string } }) {
 
   const getPagination = async () => {
     const historyInfo = await axios.get(
-      "http://localhost:3000/api/claimHistory",
+      "/api/claimHistory",
       { params: { meta_id: params.id, activePage: activePage } }
     );
     setHistoryData(historyInfo.data);
@@ -401,7 +401,7 @@ function Page({ params }: { params: { id: string } }) {
   const handleActionSubmit = () => {
     // console.log(actionTaken);
     axios
-      .post("http://localhost:3000/api/claimHistory", {
+      .post("/api/claimHistory", {
         mode: "add",
         meta_id: params.id,
         ...actionTaken,
@@ -417,7 +417,7 @@ function Page({ params }: { params: { id: string } }) {
     event.currentTarget.disabled = true;
     console.log(emailDetails);
     axios
-      .post("http://localhost:3000/api/sendEmail", emailDetails)
+      .post("/api/sendEmail", emailDetails)
       .then((res) => {
         console.log(res);
         event.target.disabled = false;
